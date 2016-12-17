@@ -44,7 +44,7 @@ export default class Login extends Component {
                 />
                 <Button
                     title="Log In"
-                    color="#FFC107"
+                    color="#ffc107"
                     accessibilityLabel="Learn more about this purple button"
                 />
                 <Button
