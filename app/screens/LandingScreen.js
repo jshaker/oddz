@@ -29,13 +29,11 @@ class LandingScreen extends Component{
             const result = await AccessToken.getCurrentAccessToken();
             if(!result.isCancelled){
                 const { accessToken } = result;
-                console.log("bob3", accessToken);
                 //TODO: add firebase facebook login
                 this.props.navigator.push({ screen: HomeScreen});
             }
         }
         catch(error){
-            console.log("error",error);
         }
     }
 
