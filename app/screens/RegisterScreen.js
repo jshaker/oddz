@@ -32,6 +32,7 @@ class RegisterScreen extends Component {
             password: ""
         };
         this.signup = this.signup.bind(this);
+        this.goBack = this.goBack.bind(this);
     }
 
     async signup() {
@@ -41,6 +42,10 @@ class RegisterScreen extends Component {
         } catch (error) {
 
         }
+    }
+
+    goBack(){
+        this.props.navigator.pop();
     }
 
     render() {
@@ -66,6 +71,11 @@ class RegisterScreen extends Component {
                     title="Sign Up"
                     color="#8bc34a"
                     onPress={this.signup}
+                />
+                <Button
+                    title="Back"
+                    color="#e0e0e0"
+                    onPress={this.goBack}
                 />
             </View>
         );

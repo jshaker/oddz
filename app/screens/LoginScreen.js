@@ -32,6 +32,7 @@ class LoginScreen extends Component {
             password: ""
         };
         this.login = this.login.bind(this);
+        this.goBack = this.goBack.bind(this);
     }
 
     async login() {
@@ -42,6 +43,10 @@ class LoginScreen extends Component {
         } catch (error) {
 
         }
+    }
+
+    goBack(){
+        this.props.navigator.pop();
     }
 
     render() {
@@ -67,6 +72,11 @@ class LoginScreen extends Component {
                     title="Log In"
                     color="#ffc107"
                     onPress={this.login}
+                />
+                <Button
+                    title="Back"
+                    color="#e0e0e0"
+                    onPress={this.goBack}
                 />
             </View>
         );
