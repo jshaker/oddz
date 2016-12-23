@@ -1,9 +1,8 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
+import React, { Component } from 'react';
 import * as firebase from 'firebase';
+import Login from './screens/Login';
+import { Navigator, View, Text } from 'react-native';
+
 const config = {
     apiKey: "AIzaSyC6e2bDhxGSKQBZxKJptdEEl8nvMt4Ld78",
     authDomain: "oddz-18460.firebaseapp.com",
@@ -12,13 +11,18 @@ const config = {
 };
 firebase.initializeApp(config);
 
-import React, { Component } from 'react';
-import Login from './screens/Login';
 
 export default class App extends Component {
     render() {
         return (
-            <Login/>
+            <Navigator initialRoute={{ screen: Login }}
+                       renderScene={(route,navigator) => {
+                           const Screen = route.screen;
+                           return (
+                              <Screen navigator={navigator} />
+                           );
+                       }}
+            />
         );
     }
 }
