@@ -8,7 +8,7 @@ import {
     Button,
     Navigator
 } from 'react-native';
-import Home from './Home';
+import HomeScreen from './HomeScreen';
 
 
 const styles = StyleSheet.create({
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     }
 });
 
-class Login extends Component {
+class RegisterScreen extends Component {
 
     constructor(props,context){
         super(props,context);
@@ -32,23 +32,12 @@ class Login extends Component {
             password: ""
         };
         this.signup = this.signup.bind(this);
-        this.login = this.login.bind(this);
     }
 
     async signup() {
         try {
             await firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password);
-
-        } catch (error) {
-
-        }
-    }
-
-    async login() {
-        try {
-            await firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password);
-            this.props.navigator.push({ screen: Home });
-
+            this.props.navigator.push({ screen: HomeScreen });
         } catch (error) {
 
         }
@@ -74,28 +63,18 @@ class Login extends Component {
                     value={this.state.password}
                 />
                 <Button
-                    title="Log In"
-                    color="#ffc107"
-                    onPress={this.login}
-                />
-                <Button
                     title="Sign Up"
                     color="#8bc34a"
                     onPress={this.signup}
-                />
-                <Button
-                    title="Log In With Facebook"
-                    color="#3b5998"
-                    onPress={() => null}
                 />
             </View>
         );
     }
 }
 
-Login.propTypes = {
+RegisterScreen.propTypes = {
     navigator: PropTypes.object.isRequired
 };
 
-export default Login;
+export default RegisterScreen;
 

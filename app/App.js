@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
-import Login from './screens/Login';
+import LandingScreen from './screens/LandingScreen';
 import { Navigator, View, Text } from 'react-native';
 
 const config = {
@@ -15,7 +15,7 @@ firebase.initializeApp(config);
 export default class App extends Component {
     render() {
         return (
-            <Navigator initialRoute={{ screen: Login }}
+            <Navigator initialRoute={{ screen: LandingScreen }}
                        renderScene={(route,navigator) => {
                            const Screen = route.screen;
                            return (
