@@ -3,26 +3,40 @@ import {View, Text, Button} from 'react-native';
 import LoginScreen from './LoginScreen';
 import RegisterScreen from './RegisterScreen';
 import HomeScreen from './HomeScreen';
+import { LoginManager, AccessToken } from 'react-native-fbsdk';
 
 
 class LandingScreen extends Component{
 
+    constructor(props,context){
+        super(props,context);
+        this.redirectLogin = this.redirectLogin.bind(this);
+        this.redirectRegister = this.redirectRegister.bind(this);
+        this.loginWithFacebook = this.loginWithFacebook.bind(this);
+    }
+
+    redirectLogin(){
+        this.props.navigator.push({ screen: LoginScreen});
+    }
+
+    redirectRegister(){
+        this.props.navigator.push({ screen: RegisterScreen});
+    }
+
+    async loginWithFacebook(){
+        try{
+            await LoginManager.logInWithReadPermissions(['public_profile']);
+            const { accessToken } = await AccessToken.getCurrentAccessToken();
+            //TODO: add firebase facebook login
+            this.props.navigator.push({ screen: HomeScreen});
+        }
+        catch(error){
+
+        }
+    }
+
     render(){
 
-        const redirectLogin = function(){
-          this.props.navigator.push({ screen: LoginScreen});
-        }.bind(this);
-
-
-        const redirectRegister = function(){
-            this.props.navigator.push({ screen: RegisterScreen});
-        }.bind(this);
-
-
-        const loginWithFacebook = function(){
-            //TODO: facebook auth login
-            this.props.navigator.push({ screen: HomeScreen});
-        }.bind(this);
 
         return(
             <View>
@@ -30,17 +44,17 @@ class LandingScreen extends Component{
                 <Button
                     title="Log In"
                     color="#ffc107"
-                    onPress={redirectLogin}
+                    onPress={this.redirectLogin}
                 />
                 <Button
                     title="Sign Up"
                     color="#8bc34a"
-                    onPress={redirectRegister}
+                    onPress={this.redirectRegister}
                 />
                 <Button
                     title="Continue With Facebook"
                     color="#3b5998"
-                    onPress={loginWithFacebook}
+                    onPress={this.loginWithFacebook}
                 />
             </View>
         );
