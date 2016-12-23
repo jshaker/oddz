@@ -1,11 +1,11 @@
 package com.oddz;
 
-import android.app.Application;
-import android.util.Log;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.facebook.appevents.AppEventsLogger;
+import android.app.Application;
+import android.util.Log;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
