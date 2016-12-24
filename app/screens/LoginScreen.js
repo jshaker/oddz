@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import * as firebase from "firebase";
+import Firebase from '../Firebase';
 import {
     StyleSheet,
     Text,
@@ -37,7 +37,7 @@ class LoginScreen extends Component {
 
     async login() {
         try {
-            await firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password);
+            await Firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password);
             this.props.navigator.push({ screen: HomeScreen });
 
         } catch (error) {
