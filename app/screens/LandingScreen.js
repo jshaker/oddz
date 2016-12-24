@@ -26,12 +26,14 @@ class LandingScreen extends Component{
     async loginWithFacebook(){
         try{
             await LoginManager.logInWithReadPermissions(['public_profile']);
-            const { accessToken } = await AccessToken.getCurrentAccessToken();
-            //TODO: add firebase facebook login
-            this.props.navigator.push({ screen: HomeScreen});
+            const result = await AccessToken.getCurrentAccessToken();
+            if(!result.isCancelled){
+                const { accessToken } = result;
+                //TODO: add firebase facebook login
+                this.props.navigator.push({ screen: HomeScreen});
+            }
         }
         catch(error){
-
         }
     }
 
