@@ -13,7 +13,7 @@ class HomeScreen extends Component{
 
     logout(){
         //TODO: destroy firebase session
-        this.props.navigator.push({ screen: LandingScreen});
+        this.props.navigator.popToTop(0);
     }
 
     render(){

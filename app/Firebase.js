@@ -5,4 +5,6 @@ const config = {
     databaseURL: "https://oddz-18460.firebaseio.com",
     storageBucket: "oddz-18460.appspot.com"
 };
+export const FacebookAuthProvider = firebase.auth.FacebookAuthProvider;
+
 export default firebase.initializeApp(config);
