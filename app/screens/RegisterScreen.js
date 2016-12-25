@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import Firebase from '../Firebase';
+import { FireAuth } from '../FirebaseApp';
 import {
     StyleSheet,
     Text,
@@ -37,7 +37,7 @@ class RegisterScreen extends Component {
 
     async signup() {
         try {
-            await Firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password);
+            await FireAuth.createUserWithEmailAndPassword(this.state.email, this.state.password);
             this.props.navigator.push({ screen: HomeScreen });
         } catch (error) {
 
