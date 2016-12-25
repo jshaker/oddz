@@ -4,9 +4,8 @@ import LoginScreen from './LoginScreen';
 import RegisterScreen from './RegisterScreen';
 import HomeScreen from './HomeScreen';
 import { LoginManager, AccessToken } from 'react-native-fbsdk';
-import Firebase, {FacebookAuthProvider} from '../Firebase';
+import {FacebookAuthProvider, FireAuth} from '../FirebaseApp';
 
-const auth = Firebase.auth();
 
 class LandingScreen extends Component{
 
@@ -33,7 +32,7 @@ class LandingScreen extends Component{
             }
             const { accessToken } = await AccessToken.getCurrentAccessToken();
             const credential = FacebookAuthProvider.credential(accessToken);
-            auth.signInWithCredential(credential);
+            FireAuth.signInWithCredential(credential);
             this.props.navigator.push({ screen: HomeScreen});
         }
         catch(error){
