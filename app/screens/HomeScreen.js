@@ -25,8 +25,8 @@ class HomeScreen extends Component{
     }
 
 
-    logout(){
-        //TODO: destroy firebase session
+    async logout(){
+        await FireAuth.signOut();
         this.props.navigator.popToTop(0);
     }
 
