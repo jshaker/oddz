@@ -19,6 +19,30 @@ class AddFriendsScreen extends Component {
         this.goBack = this.goBack.bind(this);
     }
 
+    componentWillMount(){
+        this.search();
+    }
+
+    async search(){
+        try{
+            const body = {
+                q: "*bubba"
+            };
+
+            const result = await fetch("https://xl3kjbor:dkkw3rr5t2eiy7t3@smoke-8808408.us-east-1.bonsaisearch.net/firebase/_search", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            console.log("result",result);
+        }
+        catch(error){
+            console.log("error",error);
+        }
+
+    }
+
     goBack(){
         this.props.navigator.pop();
     }
