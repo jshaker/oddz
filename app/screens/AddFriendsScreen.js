@@ -25,14 +25,17 @@ class AddFriendsScreen extends Component {
         this.search();
     }
 
-    async search(){
+    async search(text){
+        if(text == ""){
+            return this.setState({users: []});
+        }
         try{
             const body = {
                 "query": {
                     "bool" : {
                         "must" : {
                             "query_string" : {
-                                "query" : "*bubba*"
+                                "query" : `${text}*`
                             }
                         }
                     }
@@ -46,8 +49,8 @@ class AddFriendsScreen extends Component {
                 },
                 body: JSON.stringify(body)
             });
-            const users = JSON.parse(response._bodyInit).hits.hits;
-            console.log("users",users);
+            const users = JSON.stringify(JSON.parse(response._bodyInit).hits.hits);
+            this.setState({users});
         }
         catch(error){
             console.log("error",error);
@@ -64,6 +67,14 @@ class AddFriendsScreen extends Component {
             <View>
                 <Text>
                     Add Friendz
+                </Text>
+                <TextInput
+                    style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+                    onChangeText={(text) => this.search(text)}
+                    placeholder="Search for friends..."
+                />
+                <Text>
+                    {this.state.users}
                 </Text>
                 <Button
                     title="Back"
