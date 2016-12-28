@@ -1,5 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { FireDB } from '../FirebaseApp';
+import Base64 from 'base-64';
+
 import {
     StyleSheet,
     Text,
@@ -26,16 +28,26 @@ class AddFriendsScreen extends Component {
     async search(){
         try{
             const body = {
-                q: "*bubba"
+                "query": {
+                    "bool" : {
+                        "must" : {
+                            "query_string" : {
+                                "query" : "*bubba*"
+                            }
+                        }
+                    }
+                }
             };
 
-            const result = await fetch("https://xl3kjbor:dkkw3rr5t2eiy7t3@smoke-8808408.us-east-1.bonsaisearch.net/firebase/_search", {
-                method: "POST",
+            const response = await fetch('https://smoke-8808408.us-east-1.bonsaisearch.net/firebase/_search', {
+                method: 'post',
                 headers: {
-                    'Content-Type': 'application/json'
-                }
+                    'Authorization': 'Basic '+Base64.encode('xl3kjbor:dkkw3rr5t2eiy7t3')
+                },
+                body: JSON.stringify(body)
             });
-            console.log("result",result);
+            const users = JSON.parse(response._bodyInit).hits.hits;
+            console.log("users",users);
         }
         catch(error){
             console.log("error",error);
