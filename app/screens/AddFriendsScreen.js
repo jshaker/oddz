@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { FireDB } from '../FirebaseApp';
+import { FireDB, FireAuth } from '../FirebaseApp';
 import Base64 from 'base-64';
 
 import {
@@ -12,10 +12,11 @@ import {
 } from 'react-native';
 
 const styles = StyleSheet.create({
-  row: {
-      flexDirection: 'row',
-      padding: 10
-  }
+    row: {
+        flexDirection: 'row',
+        padding: 10,
+        justifyContent: 'space-between'
+    }
 });
 
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -28,10 +29,16 @@ class AddFriendsScreen extends Component {
             users: ds.cloneWithRows([])
         };
         this.goBack = this.goBack.bind(this);
+        this.renderRow = this.renderRow.bind(this);
     }
 
     componentWillMount(){
         this.search();
+    }
+
+    addFriend(userID){
+        const currentUserId = FireAuth.currentUser.uid;
+        return FireDB.ref(`friendRequests/${userID}/${currentUserId}`).set(false);
     }
 
     async search(text){
@@ -58,7 +65,7 @@ class AddFriendsScreen extends Component {
                 },
                 body: JSON.stringify(body)
             });
-            const users = JSON.parse(response._bodyInit).hits.hits.map(user => user._source);
+            const users = JSON.parse(response._bodyInit).hits.hits;
             this.setState({users: ds.cloneWithRows(users)});
         }
         catch(error){
@@ -73,9 +80,22 @@ class AddFriendsScreen extends Component {
 
     renderRow(rowData){
         return (
-          <View style={styles.row}>
-            <Text>{rowData.screenName}</Text>
-          </View>
+            <View style={styles.row}>
+                <Text>{rowData._source.screenName}</Text>
+                <Button
+                    title="+"
+                    color="#2196f3"
+                    onPress={function(){
+                        //TODO: set button on loading state
+                        this.addFriend(rowData._id).then(function(response){
+                            //TODO: show checkmark instead of button
+                        }.bind(this),
+                        function(error){
+                            //TODO: show add button again
+                        });
+                    }.bind(this)}
+                />
+            </View>
         );
     }
 
@@ -101,6 +121,7 @@ class AddFriendsScreen extends Component {
                     style={{height: 40, borderColor: 'gray', borderWidth: 1}}
                     onChangeText={(text) => this.search(text)}
                     placeholder="Search for friends..."
+                    clearButtonMode="always"
                 />
                 <ListView
                     dataSource={this.state.users}
