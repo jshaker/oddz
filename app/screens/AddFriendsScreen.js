@@ -58,7 +58,7 @@ class AddFriendsScreen extends Component {
                 },
                 body: JSON.stringify(body)
             });
-            const users = JSON.parse(response._bodyInit).hits.hits.map(user => user._source.screenName);
+            const users = JSON.parse(response._bodyInit).hits.hits.map(user => user._source);
             this.setState({users: ds.cloneWithRows(users)});
         }
         catch(error){
@@ -74,7 +74,7 @@ class AddFriendsScreen extends Component {
     renderRow(rowData){
         return (
           <View style={styles.row}>
-            <Text>{rowData}</Text>
+            <Text>{rowData.screenName}</Text>
           </View>
         );
     }
