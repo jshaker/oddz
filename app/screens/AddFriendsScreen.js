@@ -8,15 +8,24 @@ import {
     View,
     TextInput,
     Button,
-    Navigator
+    ListView
 } from 'react-native';
+
+const styles = StyleSheet.create({
+  row: {
+      flexDirection: 'row',
+      padding: 10
+  }
+});
+
+const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
 class AddFriendsScreen extends Component {
 
     constructor(props,context){
         super(props,context);
         this.state = {
-            users: []
+            users: ds.cloneWithRows([])
         };
         this.goBack = this.goBack.bind(this);
     }
@@ -27,7 +36,7 @@ class AddFriendsScreen extends Component {
 
     async search(text){
         if(text == ""){
-            return this.setState({users: []});
+            return this.setState({users: ds.cloneWithRows([])});
         }
         try{
             const body = {
@@ -49,8 +58,8 @@ class AddFriendsScreen extends Component {
                 },
                 body: JSON.stringify(body)
             });
-            const users = JSON.stringify(JSON.parse(response._bodyInit).hits.hits);
-            this.setState({users});
+            const users = JSON.parse(response._bodyInit).hits.hits.map(user => user._source.screenName);
+            this.setState({users: ds.cloneWithRows(users)});
         }
         catch(error){
             console.log("error",error);
@@ -60,6 +69,26 @@ class AddFriendsScreen extends Component {
 
     goBack(){
         this.props.navigator.pop();
+    }
+
+    renderRow(rowData){
+        return (
+          <View style={styles.row}>
+            <Text>{rowData}</Text>
+          </View>
+        );
+    }
+
+    renderSeparator(sectionID, rowID, adjacentRowHighlighted){
+        return (
+            <View
+                key={`${sectionID}-${rowID}`}
+                style={{
+                  height: adjacentRowHighlighted ? 4 : 1,
+                  backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#CCCCCC',
+                }}
+            />
+        );
     }
 
     render() {
@@ -73,9 +102,12 @@ class AddFriendsScreen extends Component {
                     onChangeText={(text) => this.search(text)}
                     placeholder="Search for friends..."
                 />
-                <Text>
-                    {this.state.users}
-                </Text>
+                <ListView
+                    dataSource={this.state.users}
+                    renderRow={this.renderRow}
+                    renderSeparator={this.renderSeparator}
+                    enableEmptySections
+                />
                 <Button
                     title="Back"
                     color="#e0e0e0"
