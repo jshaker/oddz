@@ -3,6 +3,7 @@ import {View, Text, Button} from 'react-native';
 import { FireDB, FireAuth} from '../FirebaseApp';
 import CompleteRegistrationModal from '../modals/CompleteRegistrationModal';
 import AddFriendsScreen from './AddFriendsScreen';
+import { Examples } from '@shoutem/ui';
 
 class HomeScreen extends Component{
 
@@ -50,20 +51,7 @@ class HomeScreen extends Component{
 
     render(){
         return(
-            <View>
-                <CompleteRegistrationModal visible={this.state.userInfoModal} />
-                <Text>Logged In</Text>
-                <Button
-                    title="Add Friends"
-                    color="#2196f3"
-                    onPress={this.redirectAddFriends}
-                />
-                <Button
-                    title="Log Out"
-                    color="#e0e0e0"
-                    onPress={this.logout}
-                />
-            </View>
+            <Examples/>
         );
     }
 }
