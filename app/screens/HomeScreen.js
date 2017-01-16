@@ -1,8 +1,9 @@
 import React, {Component, PropTypes} from 'react';
-import {View, Text, Button} from 'react-native';
+import {View, Text} from 'react-native';
 import { FireDB, FireAuth} from '../FirebaseApp';
 import CompleteRegistrationModal from '../modals/CompleteRegistrationModal';
 import AddFriendsScreen from './AddFriendsScreen';
+import { Button } from 'react-native-elements';
 
 class HomeScreen extends Component{
 
@@ -54,13 +55,15 @@ class HomeScreen extends Component{
                 <CompleteRegistrationModal visible={this.state.userInfoModal} />
                 <Text>Logged In</Text>
                 <Button
+                    raised
                     title="Add Friends"
-                    color="#2196f3"
+                    backgroundColor="#2196f3"
                     onPress={this.redirectAddFriends}
                 />
                 <Button
+                    raised
                     title="Log Out"
-                    color="#e0e0e0"
+                    backgroundColor="#e0e0e0"
                     onPress={this.logout}
                 />
             </View>
