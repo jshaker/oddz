@@ -1,15 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import { FireDB, FireAuth } from '../FirebaseApp';
 import Base64 from 'base-64';
-
 import {
     StyleSheet,
     Text,
     View,
-    TextInput,
-    Button,
     ListView
 } from 'react-native';
+import { Button, FormInput, List, ListItem } from 'react-native-elements';
 
 const styles = StyleSheet.create({
     row: {
@@ -80,22 +78,9 @@ class AddFriendsScreen extends Component {
 
     renderRow(rowData){
         return (
-            <View style={styles.row}>
-                <Text>{rowData._source.screenName}</Text>
-                <Button
-                    title="+"
-                    color="#2196f3"
-                    onPress={function(){
-                        //TODO: set button on loading state
-                        this.addFriend(rowData._id).then(function(response){
-                            //TODO: show checkmark instead of button
-                        }.bind(this),
-                        function(error){
-                            //TODO: show add button again
-                        });
-                    }.bind(this)}
-                />
-            </View>
+            <ListItem title={rowData._source.screenName}
+                      rightIcon={{name: 'add'}}
+            />
         );
     }
 
@@ -105,7 +90,7 @@ class AddFriendsScreen extends Component {
                 key={`${sectionID}-${rowID}`}
                 style={{
                   height: adjacentRowHighlighted ? 4 : 1,
-                  backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#CCCCCC',
+                  backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#CCCCCC'
                 }}
             />
         );
@@ -114,24 +99,23 @@ class AddFriendsScreen extends Component {
     render() {
         return (
             <View>
-                <Text>
-                    Add Friendz
-                </Text>
-                <TextInput
+                <FormInput
                     style={{height: 40, borderColor: 'gray', borderWidth: 1}}
                     onChangeText={(text) => this.search(text)}
                     placeholder="Search for friends..."
                     clearButtonMode="always"
                 />
-                <ListView
-                    dataSource={this.state.users}
-                    renderRow={this.renderRow}
-                    renderSeparator={this.renderSeparator}
-                    enableEmptySections
-                />
+                <List>
+                    <ListView
+                        dataSource={this.state.users}
+                        renderRow={this.renderRow}
+                        renderSeparator={this.renderSeparator}
+                        enableEmptySections
+                    />
+                </List>
                 <Button
                     title="Back"
-                    color="#e0e0e0"
+                    backgroundColor="#e0e0e0"
                     onPress={this.goBack}
                 />
             </View>

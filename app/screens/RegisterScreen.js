@@ -4,10 +4,9 @@ import {
     StyleSheet,
     Text,
     View,
-    TextInput,
-    Button,
     Navigator
 } from 'react-native';
+import { Button, FormLabel, FormInput } from 'react-native-elements';
 import HomeScreen from './HomeScreen';
 
 
@@ -54,27 +53,29 @@ class RegisterScreen extends Component {
                 <Text style={styles.welcome}>
                     OddZ
                 </Text>
-                <TextInput
+                <FormLabel>Username</FormLabel>
+                <FormInput
                     style={{height: 40, borderColor: 'gray', borderWidth: 1}}
                     onChangeText={(text) => this.setState({email: text})}
-                    placeholder="Username"
+                    placeholder="Please enter your username..."
                     value={this.state.email}
                 />
-                <TextInput
+                <FormLabel>Password</FormLabel>
+                <FormInput
                     style={{height: 40, borderColor: 'gray', borderWidth: 1}}
                     onChangeText={(text) => this.setState({password: text})}
-                    placeholder="Password"
+                    placeholder="Please enter your password..."
                     secureTextEntry
                     value={this.state.password}
                 />
                 <Button
                     title="Sign Up"
-                    color="#8bc34a"
+                    backgroundColor="#8bc34a"
                     onPress={this.signup}
                 />
                 <Button
                     title="Back"
-                    color="#e0e0e0"
+                    backgroundColor="#e0e0e0"
                     onPress={this.goBack}
                 />
             </View>

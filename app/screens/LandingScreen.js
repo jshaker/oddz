@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
-import {View, Text, Button} from 'react-native';
+import {View, Text} from 'react-native';
+import { Button } from 'react-native-elements';
 import LoginScreen from './LoginScreen';
 import RegisterScreen from './RegisterScreen';
 import HomeScreen from './HomeScreen';
@@ -48,17 +49,17 @@ class LandingScreen extends Component{
                 <Text>Please sign in to continue</Text>
                 <Button
                     title="Log In"
-                    color="#ffc107"
+                    backgroundColor="#ffc107"
                     onPress={this.redirectLogin}
                 />
                 <Button
                     title="Sign Up"
-                    color="#8bc34a"
+                    backgroundColor="#8bc34a"
                     onPress={this.redirectRegister}
                 />
                 <Button
                     title="Continue With Facebook"
-                    color="#3b5998"
+                    backgroundColor="#3b5998"
                     onPress={this.loginWithFacebook}
                 />
             </View>
