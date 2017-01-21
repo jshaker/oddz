@@ -29,10 +29,6 @@ class AddFriendsScreen extends Component {
         this.renderRow = this.renderRow.bind(this);
     }
 
-    componentWillMount(){
-        this.search();
-    }
-
     addFriend(userID){
         const currentUserId = FireAuth.currentUser.uid;
         return FireDB.ref(`friendRequests/${userID}/${currentUserId}`).set(false);
