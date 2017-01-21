@@ -13,6 +13,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#F5FCFF'
+    },
+    row: {
+        flexDirection: 'row',
+        padding: 10,
+        justifyContent: 'space-between'
     }
 });
 
@@ -73,9 +78,22 @@ class AddFriendsScreen extends Component {
 
     renderRow(rowData){
         return (
-            <ListItem title={rowData._source.screenName}
-                      rightIcon={{name: 'add'}}
-            />
+            <View style={styles.row}>
+                <Text>{rowData._source.screenName}</Text>
+                <Button
+                    title="+"
+                    backgroundColor="#2196f3"
+                    onPress={function(){
+                        //TODO: set button on loading state
+                        this.addFriend(rowData._id).then(function(response){
+                            //TODO: show checkmark instead of button
+                        }.bind(this),
+                        function(error){
+                            //TODO: show add button again
+                        });
+                    }.bind(this)}
+                />
+            </View>
         );
     }
 
@@ -100,14 +118,12 @@ class AddFriendsScreen extends Component {
                     placeholder="Search for friends..."
                     clearButtonMode="always"
                 />
-                <List>
-                    <ListView
-                        dataSource={this.state.users}
-                        renderRow={this.renderRow}
-                        renderSeparator={this.renderSeparator}
-                        enableEmptySections
-                    />
-                </List>
+                <ListView
+                    dataSource={this.state.users}
+                    renderRow={this.renderRow}
+                    renderSeparator={this.renderSeparator}
+                    enableEmptySections
+                />
                 <Button
                     title="Back"
                     backgroundColor="#e0e0e0"
