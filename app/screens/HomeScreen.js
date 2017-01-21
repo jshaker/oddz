@@ -1,9 +1,16 @@
 import React, {Component, PropTypes} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import { FireDB, FireAuth} from '../FirebaseApp';
 import CompleteRegistrationModal from '../modals/CompleteRegistrationModal';
 import AddFriendsScreen from './AddFriendsScreen';
 import { Button } from 'react-native-elements';
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#F5FCFF'
+    }
+});
 
 class HomeScreen extends Component{
 
@@ -51,7 +58,7 @@ class HomeScreen extends Component{
 
     render(){
         return(
-            <View>
+            <View style={styles.container}>
                 <CompleteRegistrationModal visible={this.state.userInfoModal} />
                 <Text>Logged In</Text>
                 <Button

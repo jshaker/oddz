@@ -10,10 +10,9 @@ import {
 import { Button, FormInput, List, ListItem } from 'react-native-elements';
 
 const styles = StyleSheet.create({
-    row: {
-        flexDirection: 'row',
-        padding: 10,
-        justifyContent: 'space-between'
+    container: {
+        flex: 1,
+        backgroundColor: '#F5FCFF'
     }
 });
 
@@ -98,7 +97,7 @@ class AddFriendsScreen extends Component {
 
     render() {
         return (
-            <View>
+            <View style={styles.container}>
                 <FormInput
                     style={{height: 40, borderColor: 'gray', borderWidth: 1}}
                     onChangeText={(text) => this.search(text)}

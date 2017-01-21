@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import { Button } from 'react-native-elements';
 import LoginScreen from './LoginScreen';
 import RegisterScreen from './RegisterScreen';
@@ -7,6 +7,12 @@ import HomeScreen from './HomeScreen';
 import { LoginManager, AccessToken } from 'react-native-fbsdk';
 import {FacebookAuthProvider, FireAuth} from '../FirebaseApp';
 
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#F5FCFF'
+    }
+});
 
 class LandingScreen extends Component{
 
@@ -45,7 +51,7 @@ class LandingScreen extends Component{
 
 
         return(
-            <View>
+            <View style={styles.container}>
                 <Text>Please sign in to continue</Text>
                 <Button
                     title="Log In"
