@@ -3,6 +3,7 @@ import {View, Text, StyleSheet} from 'react-native';
 import { FireDB, FireAuth} from '../FirebaseApp';
 import CompleteRegistrationModal from '../modals/CompleteRegistrationModal';
 import AddFriendsScreen from './AddFriendsScreen';
+import AcceptDeclineFriendScreen from './AcceptDeclineFriendScreen';
 import { Button } from 'react-native-elements';
 
 const styles = StyleSheet.create({
@@ -25,6 +26,7 @@ class HomeScreen extends Component{
         this.logout = this.logout.bind(this);
         this.loadUserInfo = this.loadUserInfo.bind(this);
         this.redirectAddFriends = this.redirectAddFriends.bind(this);
+        this.redirectAcceptDeclineFriendScreen = this.redirectAcceptDeclineFriendScreen.bind(this);
 
     }
 
@@ -56,6 +58,10 @@ class HomeScreen extends Component{
         this.props.navigator.push({ screen: AddFriendsScreen});
     }
 
+    redirectAcceptDeclineFriendScreen(){
+        this.props.navigator.push({ screen: AcceptDeclineFriendScreen});
+    }
+
     render(){
         return(
             <View style={styles.container}>
@@ -72,6 +78,12 @@ class HomeScreen extends Component{
                     title="Log Out"
                     backgroundColor="#e0e0e0"
                     onPress={this.logout}
+                />
+                <Button
+                    raised
+                    title="View Friend Request"
+                    backgroundColor="#2196f3"
+                    onPress={this.redirectAcceptDeclineFriendScreen}
                 />
             </View>
         );
