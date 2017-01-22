@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { FireAuth } from '../FirebaseApp';
+import FirebaseApp from '../FirebaseApp';
 import {
     StyleSheet,
     Text,
@@ -7,20 +7,8 @@ import {
     Navigator
 } from 'react-native';
 import { Button, FormLabel, FormInput } from 'react-native-elements';
-import HomeScreen from './HomeScreen';
+import { HomeScreenNavigation } from './ScreenNavs';
 
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#F5FCFF'
-    },
-    welcome: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10
-    }
-});
 
 class RegisterScreen extends Component {
 
@@ -31,28 +19,20 @@ class RegisterScreen extends Component {
             password: ""
         };
         this.signup = this.signup.bind(this);
-        this.goBack = this.goBack.bind(this);
     }
 
     async signup() {
         try {
-            await FireAuth.createUserWithEmailAndPassword(this.state.email, this.state.password);
-            this.props.navigator.push({ screen: HomeScreen });
+            await FirebaseApp.auth().createUserWithEmailAndPassword(this.state.email, this.state.password);
+            this.props.navigator.push(HomeScreenNavigation);
         } catch (error) {
 
         }
     }
 
-    goBack(){
-        this.props.navigator.pop();
-    }
-
     render() {
         return (
-            <View style={styles.container}>
-                <Text style={styles.welcome}>
-                    OddZ
-                </Text>
+            <View style={this.props.style}>
                 <FormLabel>Username</FormLabel>
                 <FormInput
                     style={{height: 40, borderColor: 'gray', borderWidth: 1}}
@@ -72,11 +52,6 @@ class RegisterScreen extends Component {
                     title="Sign Up"
                     backgroundColor="#8bc34a"
                     onPress={this.signup}
-                />
-                <Button
-                    title="Back"
-                    backgroundColor="#e0e0e0"
-                    onPress={this.goBack}
                 />
             </View>
         );

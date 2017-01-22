@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { FireDB, FireAuth } from '../FirebaseApp';
+import FirebaseApp, { FireDB } from '../FirebaseApp';
 import Base64 from 'base-64';
 import {
     StyleSheet,
@@ -7,13 +7,9 @@ import {
     View,
     ListView
 } from 'react-native';
-import { Button, FormInput, List, ListItem } from 'react-native-elements';
+import { Button, FormInput} from 'react-native-elements';
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#F5FCFF'
-    },
     row: {
         flexDirection: 'row',
         padding: 10,
@@ -30,12 +26,11 @@ class AddFriendsScreen extends Component {
         this.state = {
             users: ds.cloneWithRows([])
         };
-        this.goBack = this.goBack.bind(this);
         this.renderRow = this.renderRow.bind(this);
     }
 
-    addFriend(userID){
-        const currentUserId = FireAuth.currentUser.uid;
+    async addFriend(userID){
+        const currentUserId = await FirebaseApp.auth().currentUser.uid;
         return FireDB.ref(`friendRequests/${userID}/${currentUserId}`).set(false);
     }
 
@@ -70,10 +65,6 @@ class AddFriendsScreen extends Component {
             console.log("error",error);
         }
 
-    }
-
-    goBack(){
-        this.props.navigator.pop();
     }
 
     renderRow(rowData){
@@ -111,7 +102,7 @@ class AddFriendsScreen extends Component {
 
     render() {
         return (
-            <View style={styles.container}>
+            <View style={this.props.style}>
                 <FormInput
                     style={{height: 40, borderColor: 'gray', borderWidth: 1}}
                     onChangeText={(text) => this.search(text)}
@@ -123,11 +114,6 @@ class AddFriendsScreen extends Component {
                     renderRow={this.renderRow}
                     renderSeparator={this.renderSeparator}
                     enableEmptySections
-                />
-                <Button
-                    title="Back"
-                    backgroundColor="#e0e0e0"
-                    onPress={this.goBack}
                 />
             </View>
         );

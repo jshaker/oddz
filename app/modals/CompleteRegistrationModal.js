@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {Modal, View, TextInput, Text, Button} from 'react-native';
-import { FireDB, FireAuth } from '../FirebaseApp';
+import FirebaseApp, { FireDB } from '../FirebaseApp';
 
 class CompleteRegistrationModal extends Component{
 
@@ -14,8 +14,8 @@ class CompleteRegistrationModal extends Component{
         this.registerUser = this.registerUser.bind(this);
     }
 
-    registerUser(){
-        const userId = FireAuth.currentUser.uid;
+    async registerUser(){
+        const userId = await FirebaseApp.auth().currentUser.uid;
         FireDB.ref('users/' + userId).set(this.state);
     }
 
