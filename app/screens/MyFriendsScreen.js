@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, ListView} from 'react-native';
 import { FireDB, FireAuth} from '../FirebaseApp';
+import { Button, List, ListItem } from 'react-native-elements';
 
 const styles = StyleSheet.create({
     container: {
@@ -9,14 +10,20 @@ const styles = StyleSheet.create({
     }
 });
 
+const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+
 class MyFriendsScreen extends Component{
 
 
     constructor(props,context){
         super(props,context);
         this.state = {
-            friends: []
+            friends: [],
         };
+
+        this.renderRow = this.renderRow.bind(this);
+        this.goBack = this.goBack.bind(this);
+        this.viewUserInfo = this.viewUserInfo.bind(this);
     }
 
     goBack(){
@@ -31,7 +38,7 @@ class MyFriendsScreen extends Component{
         return (
             <ListItem title={rowData.screenName}
                       onPress={function(){
-                        this.viewUserInfo(rowData._id);
+                        this.viewUserInfo(rowData.key);
                       }.bind(this)}
             />
         );
@@ -44,8 +51,9 @@ class MyFriendsScreen extends Component{
     loadUserFriends(){
         const userId = FireAuth.currentUser.uid;
         const friendsRef = FireDB.ref('friends/' + userId);
-        friendsRef .on('value', function(data){
-            this.setState({friends: data});
+        friendsRef.on('child_added', function(data){
+            const friendsList = [...this.state.friends,{screenName:data.val(), key: data.key}];
+            this.setState({friends: friendsList});
         }.bind(this));
     }
 
@@ -64,9 +72,14 @@ class MyFriendsScreen extends Component{
     render(){
         return(
             <View style={styles.container}>
+                <Button
+                    title="Back"
+                    backgroundColor="#e0e0e0"
+                    onPress={this.goBack}
+                />
                 <List>
                     <ListView
-                        dataSource={this.state.friends}
+                        dataSource={ds.cloneWithRows(this.state.friends)}
                         renderRow={this.renderRow}
                         renderSeparator={this.renderSeparator}
                         enableEmptySections
