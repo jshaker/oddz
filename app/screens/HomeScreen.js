@@ -15,15 +15,24 @@ class HomeScreen extends Component{
             userInfoModal: false
         };
 
+        this.userRef = null;
+        this.listener = null;
+
         this.logout = this.logout.bind(this);
-        this.loadUserInfo = this.loadUserInfo.bind(this);
+        this.listenUserInfo = this.listenUserInfo.bind(this);
+        this.unlistenUserInfo = this.unlistenUserInfo.bind(this);
         this.redirectAddFriends = this.redirectAddFriends.bind(this);
         this.redirectMyFriends = this.redirectMyFriends.bind(this);
 
     }
 
     componentWillMount(){
-        this.loadUserInfo();
+        this.listenUserInfo();
+    }
+
+
+    componentWillUnmount(){
+        this.unlistenUserInfo();
     }
 
 
@@ -32,10 +41,9 @@ class HomeScreen extends Component{
         this.props.navigator.popToTop(0);
     }
 
-    async loadUserInfo(){
-        const userId = await FirebaseApp.auth().currentUser.uid;
-        const userRef = FireDB.ref('users/' + userId);
-        userRef.on('value', function(data){
+    async listenUserInfo(){
+        this.userRef = FireDB.ref('users/' + await FirebaseApp.auth().currentUser.uid);
+        this.listener = this.userRef.on('value', function(data){
             if(data.val() == null){
                 this.setState({userInfoModal: true});
             }
@@ -44,6 +52,10 @@ class HomeScreen extends Component{
                 this.setState({userInfo: data.val()});
             }
         }.bind(this));
+    }
+
+    unlistenUserInfo(){
+        this.userRef.off('value', this.listener);
     }
 
     redirectAddFriends(){

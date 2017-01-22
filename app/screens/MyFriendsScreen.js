@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {View, Text, StyleSheet, ListView} from 'react-native';
-import { FireDB, FireAuth} from '../FirebaseApp';
+import FirebaseApp, { FireDB } from '../FirebaseApp';
 import { Button, List, ListItem } from 'react-native-elements';
 
 const styles = StyleSheet.create({
@@ -21,7 +21,13 @@ class MyFriendsScreen extends Component{
             friends: [],
         };
 
+        this.friendsRef = null;
+        this.listener = null;
+
+
         this.renderRow = this.renderRow.bind(this);
+        this.listenUserFriends = this.listenUserFriends.bind(this);
+        this.unlistenUserFriends = this.unlistenUserFriends.bind(this);
         this.goBack = this.goBack.bind(this);
         this.viewUserInfo = this.viewUserInfo.bind(this);
     }
@@ -45,28 +51,23 @@ class MyFriendsScreen extends Component{
     }
 
     componentWillMount(){
-        this.loadUserFriends();
+        this.listenUserFriends();
     }
 
-    loadUserFriends(){
-        const userId = FireAuth.currentUser.uid;
-        const friendsRef = FireDB.ref('friends/' + userId);
-        friendsRef.on('child_added', function(data){
+    componentWillUnmount(){
+        this.unlistenUserFriends();
+    }
+
+    async listenUserFriends(){
+        this.friendsRef = FireDB.ref('friends/' + await FirebaseApp.auth().currentUser.uid);
+        this.listener = this.friendsRef.on('child_added', function(data){
             const friendsList = [...this.state.friends,{screenName:data.val(), key: data.key}];
             this.setState({friends: friendsList});
         }.bind(this));
     }
 
-    renderSeparator(sectionID, rowID, adjacentRowHighlighted){
-        return (
-            <View
-                key={`${sectionID}-${rowID}`}
-                style={{
-                  height: adjacentRowHighlighted ? 4 : 1,
-                  backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#CCCCCC'
-                }}
-            />
-        );
+    unlistenUserFriends(){
+        this.friendsRef.off('child_added',this.listener);
     }
 
     render(){
@@ -81,7 +82,6 @@ class MyFriendsScreen extends Component{
                     <ListView
                         dataSource={ds.cloneWithRows(this.state.friends)}
                         renderRow={this.renderRow}
-                        renderSeparator={this.renderSeparator}
                         enableEmptySections
                     />
                 </List>
