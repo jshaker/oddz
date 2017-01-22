@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 import Button from 'react-native-elements';
 
+const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+
 export default class AcceptDeclineFriendScreen extends Component {
 
   constructor(props,context){
@@ -55,12 +57,18 @@ export default class AcceptDeclineFriendScreen extends Component {
               }}
           />
       );
+=======
+          users: ds.cloneWithRows([])
+      };
+      this.goBack = this.goBack.bind(this);
+>>>>>>> 9d5774235700b486acd709f1a1e8894cea2dc993
   }
 
   goBack(){
       this.props.navigator.pop();
   }
 
+<<<<<<< HEAD
   getFriendRequests(){
     const currentUserId = FireAuth.currentUser.uid;
     const requests = FireDB.ref('friendRequests/' + userId);
@@ -78,6 +86,12 @@ export default class AcceptDeclineFriendScreen extends Component {
               backgroundColor="#e0e0e0"
               onPress={this.goBack}
           />
+=======
+  render() {
+      return (
+          <View>
+
+>>>>>>> 9d5774235700b486acd709f1a1e8894cea2dc993
           </View>
       );
   }
