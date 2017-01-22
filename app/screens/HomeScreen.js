@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import FirebaseApp, { FireDB } from '../FirebaseApp';
 import CompleteRegistrationModal from '../modals/CompleteRegistrationModal';
-import { AddFriendsScreenNavigation } from './ScreenNavs';
+import { AddFriendsScreenNavigation, MyFriendsScreenNavigation } from './ScreenNavs';
 import { Button } from 'react-native-elements';
 
 class HomeScreen extends Component{
@@ -15,14 +15,24 @@ class HomeScreen extends Component{
             userInfoModal: false
         };
 
+        this.userRef = null;
+        this.listener = null;
+
         this.logout = this.logout.bind(this);
-        this.loadUserInfo = this.loadUserInfo.bind(this);
+        this.listenUserInfo = this.listenUserInfo.bind(this);
+        this.unlistenUserInfo = this.unlistenUserInfo.bind(this);
         this.redirectAddFriends = this.redirectAddFriends.bind(this);
+        this.redirectMyFriends = this.redirectMyFriends.bind(this);
 
     }
 
     componentWillMount(){
-        this.loadUserInfo();
+        this.listenUserInfo();
+    }
+
+
+    componentWillUnmount(){
+        this.unlistenUserInfo();
     }
 
 
@@ -31,10 +41,9 @@ class HomeScreen extends Component{
         this.props.navigator.popToTop(0);
     }
 
-    async loadUserInfo(){
-        const userId = await FirebaseApp.auth().currentUser.uid;
-        const userRef = FireDB.ref('users/' + userId);
-        userRef.on('value', function(data){
+    async listenUserInfo(){
+        this.userRef = FireDB.ref('users/' + await FirebaseApp.auth().currentUser.uid);
+        this.listener = this.userRef.on('value', function(data){
             if(data.val() == null){
                 this.setState({userInfoModal: true});
             }
@@ -45,8 +54,16 @@ class HomeScreen extends Component{
         }.bind(this));
     }
 
+    unlistenUserInfo(){
+        this.userRef.off('value', this.listener);
+    }
+
     redirectAddFriends(){
         this.props.navigator.push(AddFriendsScreenNavigation);
+    }
+
+    redirectMyFriends(){
+        this.props.navigator.push(MyFriendsScreenNavigation);
     }
 
     render(){
@@ -58,6 +75,12 @@ class HomeScreen extends Component{
                     title="Add Friends"
                     backgroundColor="#2196f3"
                     onPress={this.redirectAddFriends}
+                />
+                <Button
+                    raised
+                    title="My Friends"
+                    backgroundColor="#ffc107"
+                    onPress={this.redirectMyFriends}
                 />
                 <Button
                     raised
