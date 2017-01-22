@@ -1,16 +1,9 @@
 import React, {Component, PropTypes} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import { FireDB, FireAuth} from '../FirebaseApp';
+import FirebaseApp, { FireDB } from '../FirebaseApp';
 import CompleteRegistrationModal from '../modals/CompleteRegistrationModal';
-import AddFriendsScreen from './AddFriendsScreen';
+import { AddFriendsScreenNavigation } from './ScreenNavs';
 import { Button } from 'react-native-elements';
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#F5FCFF'
-    }
-});
 
 class HomeScreen extends Component{
 
@@ -34,12 +27,12 @@ class HomeScreen extends Component{
 
 
     async logout(){
-        await FireAuth.signOut();
+        await FirebaseApp.auth().signOut();
         this.props.navigator.popToTop(0);
     }
 
-    loadUserInfo(){
-        const userId = FireAuth.currentUser.uid;
+    async loadUserInfo(){
+        const userId = await FirebaseApp.auth().currentUser.uid;
         const userRef = FireDB.ref('users/' + userId);
         userRef.on('value', function(data){
             if(data.val() == null){
@@ -53,14 +46,13 @@ class HomeScreen extends Component{
     }
 
     redirectAddFriends(){
-        this.props.navigator.push({ screen: AddFriendsScreen});
+        this.props.navigator.push(AddFriendsScreenNavigation);
     }
 
     render(){
         return(
-            <View style={styles.container}>
+            <View style={this.props.style}>
                 <CompleteRegistrationModal visible={this.state.userInfoModal} />
-                <Text>Logged In</Text>
                 <Button
                     raised
                     title="Add Friends"
