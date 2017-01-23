@@ -1,12 +1,12 @@
 import React, { Component, PropTypes } from 'react';
-import { FireDB, FireAuth } from '../FirebaseApp';
+import FirebaseApp, { FireDB } from '../FirebaseApp';
 import {
     StyleSheet,
     Text,
     View,
-    ListView
+    ListView,
+    Button
 } from 'react-native';
-import {Button, List, ListItem} from 'react-native-elements';
 
 const styles = StyleSheet.create({
     container: {
@@ -27,22 +27,34 @@ export default class AcceptDeclineFriendScreen extends Component {
   constructor(props,context){
       super(props,context);
       this.state = {
-        friendRequests: ds.cloneWithRows([]),
+        friendRequests: [],
         userName: ''
       };
+
+      this.requestsRef = null;
+      this.listener = null;
+      this.listenerChildRemoved = null;
+
       this.goBack = this.goBack.bind(this);
       this.renderRow = this.renderRow.bind(this);
-      this.getFriendRequests = this.getFriendRequests.bind(this);
+      this.listenFriendRequests = this.listenFriendRequests.bind(this);
+      this.unlistenFriendRequests = this.unlistenFriendRequests.bind(this);
       this.getUserName = this.getUserName.bind(this);
+      this.acceptFriend = this.acceptFriend.bind(this);
+      this.rejectFriend = this.rejectFriend.bind(this);
   }
 
   componentWillMount(){
-      this.getFriendRequests();
+      this.listenFriendRequests();
       this.getUserName();
   }
 
-  getUserName(){
-    const currentUserId = FireAuth.currentUser.uid;
+  componentWillUnmount(){
+      this.unlistenFriendRequests();
+  }
+
+  async getUserName(){
+    const currentUserId = await FirebaseApp.auth().currentUser.uid;
     const screenNameRef = FireDB.ref('users/' + currentUserId + '/screenName');
     screenNameRef.once('value', function(snapshot) {
         this.setState({userName: snapshot.val()})
@@ -50,12 +62,26 @@ export default class AcceptDeclineFriendScreen extends Component {
   }
 
   renderRow(rowData){
-        return (
-            <ListItem title={rowData._source.screenName}
-                      rightIcon={{name: 'add'}}
-            />
-        );
-    }
+      return (
+          <View style={styles.row}>
+              <Text>{rowData.screenName}</Text>
+              <Button
+                  title="accept"
+                  color="#2196f3"
+                  onPress={function(){
+                    this.acceptFriend(rowData.id, rowData.screenName)
+                  }.bind(this)}
+              />
+              <Button
+                  title="decline"
+                  color="red"
+                  onPress={function(){
+                    this.rejectFriend(rowData.id, rowData.screenName)
+                  }.bind(this)}
+              />
+          </View>
+      );
+  }
 
   renderSeparator(sectionID, rowID, adjacentRowHighlighted){
       return (
@@ -73,34 +99,47 @@ export default class AcceptDeclineFriendScreen extends Component {
       this.props.navigator.pop();
   }
 
-  getFriendRequests(){
-      const currentUserId = FireAuth.currentUser.uid;
-      const requestsRef = FireDB.ref('friendRequests/' + currentUserId );
-      requestsRef.on('child_added', function(snapshot) {
-          const requestList = [...this.state.friendRequests, {id: snapshot.key(), screenName: snapshot.val()}]
+  async listenFriendRequests(){
+      this.requestsRef = FireDB.ref('friendRequests/' + await FirebaseApp.auth().currentUser.uid );
+      this.listener = this.requestsRef.on('child_added', function(snapshot) {
+          const requestList = [...this.state.friendRequests, {id: snapshot.key, screenName: snapshot.val()}]
           this.setState({friendRequests: requestList})
       }.bind(this));
+      this.listenerChildRemoved = this.requestsRef.on('child_removed', function(snapshot) {
+          const requestList = [...this.state.friendRequests]
+          this.setState({friendRequests: requestList})
+      }.bind(this));
+  }
+
+  unlistenFriendRequests(){
+      this.requestsRef.off('child_added',this.listener);
+      this.requestsRef.off('child_removed',this.listenerChildRemoved);
+  }
+
+  async acceptFriend(friendID, friendName){
+      const currentUserId = await FirebaseApp.auth().currentUser.uid;
+      FireDB.ref(`friends/${friendID}/${currentUserId}`).set(this.state.userName);
+      FireDB.ref(`friends/${currentUserId}/${friendID}`).set(friendName);
+      return FireDB.ref(`friendRequests/${currentUserId}/${friendID}`).set(null);
+  }
+
+  async rejectFriend(friendID, friendName){
+      const currentUserId = await FirebaseApp.auth().currentUser.uid;
+      return FireDB.ref(`friendRequests/${currentUserId}/${friendID}`).set(null);
   }
 
 
 
   render() {
+    console.log(this.state.friendRequests)
       return (
-          <View>
-          <List containerStyle={{marginBottom: 20}}>
-            <ListView
-                dataSource={this.state.friendRequests}
-                renderRow={this.renderRow}
-                renderSeparator={this.renderSeparator}
-                enableEmptySections
-            />
-          </List>
-          <Button
-              title="Back"
-              backgroundColor="#e0e0e0"
-              onPress={this.goBack}
+          <ListView
+              dataSource={ds.cloneWithRows(this.state.friendRequests)}
+              renderRow={this.renderRow}
+              renderSeparator={this.renderSeparator}
+              style={{marginTop:60}}
+              enableEmptySections
           />
-          </View>
       )
     }
   }

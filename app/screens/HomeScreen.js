@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {View, Text, StyleSheet, Button} from 'react-native';
 import FirebaseApp, { FireDB } from '../FirebaseApp';
 import CompleteRegistrationModal from '../modals/CompleteRegistrationModal';
-import { AddFriendsScreenNavigation, MyFriendsScreenNavigation } from './ScreenNavs';
+import { AddFriendsScreenNavigation, MyFriendsScreenNavigation, AcceptDeclineFriendScreenNavigation } from './ScreenNavs';
 
 class HomeScreen extends Component{
 
@@ -22,6 +22,7 @@ class HomeScreen extends Component{
         this.unlistenUserInfo = this.unlistenUserInfo.bind(this);
         this.redirectAddFriends = this.redirectAddFriends.bind(this);
         this.redirectMyFriends = this.redirectMyFriends.bind(this);
+        this.redirectFriendRequests = this.redirectFriendRequests.bind(this);
 
     }
 
@@ -65,6 +66,10 @@ class HomeScreen extends Component{
         this.props.navigator.push(MyFriendsScreenNavigation);
     }
 
+    redirectFriendRequests(){
+        this.props.navigator.push(AcceptDeclineFriendScreenNavigation);
+    }
+
     render(){
         return(
             <View style={this.props.style}>
@@ -80,6 +85,12 @@ class HomeScreen extends Component{
                     title="My Friends"
                     color="#ffc107"
                     onPress={this.redirectMyFriends}
+                />
+                <Button
+                    raised
+                    title="Friend Requests"
+                    color="#ffc107"
+                    onPress={this.redirectFriendRequests}
                 />
                 <Button
                     raised
