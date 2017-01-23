@@ -1,13 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import FirebaseApp, { FireDB } from '../FirebaseApp';
 import Base64 from 'base-64';
-import {
-    StyleSheet,
-    Text,
-    View,
-    ListView
-} from 'react-native';
-import { Button, FormInput} from 'react-native-elements';
+import {StyleSheet,Text,View,ListView,Button,TextInput} from 'react-native';
 
 const styles = StyleSheet.create({
     row: {
@@ -73,7 +67,7 @@ class AddFriendsScreen extends Component {
                 <Text>{rowData._source.screenName}</Text>
                 <Button
                     title="+"
-                    backgroundColor="#2196f3"
+                    color="#2196f3"
                     onPress={function(){
                         //TODO: set button on loading state
                         this.addFriend(rowData._id).then(function(response){
@@ -103,7 +97,7 @@ class AddFriendsScreen extends Component {
     render() {
         return (
             <View style={this.props.style}>
-                <FormInput
+                <TextInput
                     style={{height: 40, borderColor: 'gray', borderWidth: 1}}
                     onChangeText={(text) => this.search(text)}
                     placeholder="Search for friends..."

@@ -1,12 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import FirebaseApp from '../FirebaseApp';
-import {
-    StyleSheet,
-    Text,
-    View,
-    Navigator
-} from 'react-native';
-import { Button, FormLabel, FormInput } from 'react-native-elements';
+import {StyleSheet,Text,View,Navigator,TextInput,Button} from 'react-native';
 import { HomeScreenNavigation } from './ScreenNavs';
 
 
@@ -33,15 +27,13 @@ class RegisterScreen extends Component {
     render() {
         return (
             <View style={this.props.style}>
-                <FormLabel>Username</FormLabel>
-                <FormInput
+                <TextInput
                     style={{height: 40, borderColor: 'gray', borderWidth: 1}}
                     onChangeText={(text) => this.setState({email: text})}
                     placeholder="Please enter your username..."
                     value={this.state.email}
                 />
-                <FormLabel>Password</FormLabel>
-                <FormInput
+                <TextInput
                     style={{height: 40, borderColor: 'gray', borderWidth: 1}}
                     onChangeText={(text) => this.setState({password: text})}
                     placeholder="Please enter your password..."
@@ -50,7 +42,7 @@ class RegisterScreen extends Component {
                 />
                 <Button
                     title="Sign Up"
-                    backgroundColor="#8bc34a"
+                    color="#8bc34a"
                     onPress={this.signup}
                 />
             </View>
