@@ -1,27 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import { FireAuth } from '../FirebaseApp';
-import {
-    StyleSheet,
-    Text,
-    View,
-    TextInput,
-    Button,
-    Navigator
-} from 'react-native';
-import HomeScreen from './HomeScreen';
-
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#F5FCFF'
-    },
-    welcome: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10
-    }
-});
+import FirebaseApp from '../FirebaseApp';
+import {StyleSheet,Text,View,Navigator,Button,TextInput} from 'react-native';
+import HomeScreenNavigation from './ScreenNavs';
 
 class LoginScreen extends Component {
 
@@ -32,39 +12,31 @@ class LoginScreen extends Component {
             password: ""
         };
         this.login = this.login.bind(this);
-        this.goBack = this.goBack.bind(this);
     }
 
     async login() {
         try {
-            await FireAuth.signInWithEmailAndPassword(this.state.email, this.state.password);
-            this.props.navigator.push({ screen: HomeScreen });
+            await FirebaseApp.auth().signInWithEmailAndPassword(this.state.email, this.state.password);
+            this.props.navigator.push(HomeScreenNavigation);
 
         } catch (error) {
 
         }
     }
 
-    goBack(){
-        this.props.navigator.pop();
-    }
-
     render() {
         return (
-            <View style={styles.container}>
-                <Text style={styles.welcome}>
-                    OddZ
-                </Text>
+            <View style={this.props.style}>
                 <TextInput
                     style={{height: 40, borderColor: 'gray', borderWidth: 1}}
                     onChangeText={(text) => this.setState({email: text})}
-                    placeholder="Username"
+                    placeholder="Please enter your username..."
                     value={this.state.email}
                 />
                 <TextInput
                     style={{height: 40, borderColor: 'gray', borderWidth: 1}}
                     onChangeText={(text) => this.setState({password: text})}
-                    placeholder="Password"
+                    placeholder="Please enter your password..."
                     secureTextEntry
                     value={this.state.password}
                 />
@@ -72,11 +44,6 @@ class LoginScreen extends Component {
                     title="Log In"
                     color="#ffc107"
                     onPress={this.login}
-                />
-                <Button
-                    title="Back"
-                    color="#e0e0e0"
-                    onPress={this.goBack}
                 />
             </View>
         );

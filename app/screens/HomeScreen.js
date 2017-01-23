@@ -1,8 +1,8 @@
 import React, {Component, PropTypes} from 'react';
-import {View, Text, Button} from 'react-native';
-import { FireDB, FireAuth} from '../FirebaseApp';
+import {View, Text, StyleSheet, Button} from 'react-native';
+import FirebaseApp, { FireDB } from '../FirebaseApp';
 import CompleteRegistrationModal from '../modals/CompleteRegistrationModal';
-import AddFriendsScreen from './AddFriendsScreen';
+import { AddFriendsScreenNavigation, MyFriendsScreenNavigation } from './ScreenNavs';
 
 class HomeScreen extends Component{
 
@@ -14,26 +14,35 @@ class HomeScreen extends Component{
             userInfoModal: false
         };
 
+        this.userRef = null;
+        this.listener = null;
+
         this.logout = this.logout.bind(this);
-        this.loadUserInfo = this.loadUserInfo.bind(this);
+        this.listenUserInfo = this.listenUserInfo.bind(this);
+        this.unlistenUserInfo = this.unlistenUserInfo.bind(this);
         this.redirectAddFriends = this.redirectAddFriends.bind(this);
+        this.redirectMyFriends = this.redirectMyFriends.bind(this);
 
     }
 
     componentWillMount(){
-        this.loadUserInfo();
+        this.listenUserInfo();
+    }
+
+
+    componentWillUnmount(){
+        this.unlistenUserInfo();
     }
 
 
     async logout(){
-        await FireAuth.signOut();
+        await FirebaseApp.auth().signOut();
         this.props.navigator.popToTop(0);
     }
 
-    loadUserInfo(){
-        const userId = FireAuth.currentUser.uid;
-        const userRef = FireDB.ref('users/' + userId);
-        userRef.on('value', function(data){
+    async listenUserInfo(){
+        this.userRef = FireDB.ref('users/' + await FirebaseApp.auth().currentUser.uid);
+        this.listener = this.userRef.on('value', function(data){
             if(data.val() == null){
                 this.setState({userInfoModal: true});
             }
@@ -44,21 +53,36 @@ class HomeScreen extends Component{
         }.bind(this));
     }
 
+    unlistenUserInfo(){
+        this.userRef.off('value', this.listener);
+    }
+
     redirectAddFriends(){
-        this.props.navigator.push({ screen: AddFriendsScreen});
+        this.props.navigator.push(AddFriendsScreenNavigation);
+    }
+
+    redirectMyFriends(){
+        this.props.navigator.push(MyFriendsScreenNavigation);
     }
 
     render(){
         return(
-            <View>
+            <View style={this.props.style}>
                 <CompleteRegistrationModal visible={this.state.userInfoModal} />
-                <Text>Logged In</Text>
                 <Button
+                    raised
                     title="Add Friends"
                     color="#2196f3"
                     onPress={this.redirectAddFriends}
                 />
                 <Button
+                    raised
+                    title="My Friends"
+                    color="#ffc107"
+                    onPress={this.redirectMyFriends}
+                />
+                <Button
+                    raised
                     title="Log Out"
                     color="#e0e0e0"
                     onPress={this.logout}

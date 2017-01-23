@@ -1,11 +1,8 @@
 import React, {Component, PropTypes} from 'react';
-import {View, Text, Button} from 'react-native';
-import LoginScreen from './LoginScreen';
-import RegisterScreen from './RegisterScreen';
-import HomeScreen from './HomeScreen';
+import {View, Text, StyleSheet,Button} from 'react-native';
+import {LoginScreenNavigation, RegisterScreenNavigation, HomeScreenNavigation} from './ScreenNavs';
 import { LoginManager, AccessToken } from 'react-native-fbsdk';
-import {FacebookAuthProvider, FireAuth} from '../FirebaseApp';
-
+import FirebaseApp, {FacebookAuthProvider} from '../FirebaseApp';
 
 class LandingScreen extends Component{
 
@@ -17,23 +14,24 @@ class LandingScreen extends Component{
     }
 
     redirectLogin(){
-        this.props.navigator.push({ screen: LoginScreen});
+        this.props.navigator.push(LoginScreenNavigation);
     }
 
     redirectRegister(){
-        this.props.navigator.push({ screen: RegisterScreen});
+        this.props.navigator.push(RegisterScreenNavigation);
     }
 
     async loginWithFacebook(){
         try{
             const result = await LoginManager.logInWithReadPermissions(['public_profile']);
             if(result.isCancelled){
+                console.log("test");
                 return;
             }
             const { accessToken } = await AccessToken.getCurrentAccessToken();
             const credential = FacebookAuthProvider.credential(accessToken);
-            FireAuth.signInWithCredential(credential);
-            this.props.navigator.push({ screen: HomeScreen});
+            await FirebaseApp.auth().signInWithCredential(credential);
+            this.props.navigator.push(HomeScreenNavigation);
         }
         catch(error){
             console.log("error",error);
@@ -44,8 +42,7 @@ class LandingScreen extends Component{
 
 
         return(
-            <View>
-                <Text>Please sign in to continue</Text>
+            <View style={this.props.style}>
                 <Button
                     title="Log In"
                     color="#ffc107"

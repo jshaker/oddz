@@ -12,6 +12,4 @@ export const FacebookAuthProvider = firebase.auth.FacebookAuthProvider;
 
 export const FireDB = FirebaseApp.database();
 
-export const FireAuth = FirebaseApp.auth();
-
 export default FirebaseApp;
