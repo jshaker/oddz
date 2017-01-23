@@ -6,7 +6,19 @@ import {
     View,
     ListView
 } from 'react-native';
-import Button from 'react-native-elements';
+import {Button, List, ListItem} from 'react-native-elements';
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#F5FCFF'
+    },
+    row: {
+        flexDirection: 'row',
+        padding: 10,
+        justifyContent: 'space-between'
+    }
+});
 
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
@@ -15,37 +27,35 @@ export default class AcceptDeclineFriendScreen extends Component {
   constructor(props,context){
       super(props,context);
       this.state = {
-        friendRequests: ds.cloneWithRows([])
+        friendRequests: ds.cloneWithRows([]),
+        userName: ''
       };
       this.goBack = this.goBack.bind(this);
       this.renderRow = this.renderRow.bind(this);
       this.getFriendRequests = this.getFriendRequests.bind(this);
+      this.getUserName = this.getUserName.bind(this);
   }
 
   componentWillMount(){
       this.getFriendRequests();
+      this.getUserName();
+  }
+
+  getUserName(){
+    const currentUserId = FireAuth.currentUser.uid;
+    const screenNameRef = FireDB.ref('users/' + currentUserId + '/screenName');
+    screenNameRef.once('value', function(snapshot) {
+        this.setState({userName: snapshot.val()})
+    }.bind(this));
   }
 
   renderRow(rowData){
-      return (
-          <View style={styles.row}>
-              <Text>{rowData._source.screenName}</Text>
-              <Button
-                  title="+"
-                  backgroundColor="#2196f3"
-                  onPress={function(){
-                      //TODO: set button on loading state
-                      this.addFriend(rowData._id, rowData._source.screenName).then(function(response){
-                          //TODO: show checkmark instead of button
-                      }.bind(this),
-                      function(error){
-                          //TODO: show add button again
-                      });
-                  }.bind(this)}
-              />
-          </View>
-      );
-  }
+        return (
+            <ListItem title={rowData._source.screenName}
+                      rightIcon={{name: 'add'}}
+            />
+        );
+    }
 
   renderSeparator(sectionID, rowID, adjacentRowHighlighted){
       return (
@@ -57,44 +67,42 @@ export default class AcceptDeclineFriendScreen extends Component {
               }}
           />
       );
-=======
-          users: ds.cloneWithRows([])
-      };
-      this.goBack = this.goBack.bind(this);
->>>>>>> 9d5774235700b486acd709f1a1e8894cea2dc993
   }
 
   goBack(){
       this.props.navigator.pop();
   }
 
-<<<<<<< HEAD
   getFriendRequests(){
-    const currentUserId = FireAuth.currentUser.uid;
-    const requests = FireDB.ref('friendRequests/' + userId);
-    return this.setState({friendRequests: ds.cloneWithRows([requests])});
+      const currentUserId = FireAuth.currentUser.uid;
+      const requestsRef = FireDB.ref('friendRequests/' + currentUserId );
+      requestsRef.on('child_added', function(snapshot) {
+          const requestList = [...this.state.friendRequests, {id: snapshot.key(), screenName: snapshot.val()}]
+          this.setState({friendRequests: requestList})
+      }.bind(this));
   }
 
 
 
   render() {
-    console.log(this.friendRequests);
       return (
           <View>
+          <List containerStyle={{marginBottom: 20}}>
+            <ListView
+                dataSource={this.state.friendRequests}
+                renderRow={this.renderRow}
+                renderSeparator={this.renderSeparator}
+                enableEmptySections
+            />
+          </List>
           <Button
               title="Back"
               backgroundColor="#e0e0e0"
               onPress={this.goBack}
           />
-=======
-  render() {
-      return (
-          <View>
-
->>>>>>> 9d5774235700b486acd709f1a1e8894cea2dc993
           </View>
-      );
-  }
+      )
+    }
   }
 
   AcceptDeclineFriendScreen.propTypes = {
