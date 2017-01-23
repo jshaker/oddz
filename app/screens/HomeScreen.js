@@ -1,9 +1,8 @@
 import React, {Component, PropTypes} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Button} from 'react-native';
 import FirebaseApp, { FireDB } from '../FirebaseApp';
 import CompleteRegistrationModal from '../modals/CompleteRegistrationModal';
 import { AddFriendsScreenNavigation, MyFriendsScreenNavigation } from './ScreenNavs';
-import { Button } from 'react-native-elements';
 
 class HomeScreen extends Component{
 
@@ -73,19 +72,19 @@ class HomeScreen extends Component{
                 <Button
                     raised
                     title="Add Friends"
-                    backgroundColor="#2196f3"
+                    color="#2196f3"
                     onPress={this.redirectAddFriends}
                 />
                 <Button
                     raised
                     title="My Friends"
-                    backgroundColor="#ffc107"
+                    color="#ffc107"
                     onPress={this.redirectMyFriends}
                 />
                 <Button
                     raised
                     title="Log Out"
-                    backgroundColor="#e0e0e0"
+                    color="#e0e0e0"
                     onPress={this.logout}
                 />
             </View>

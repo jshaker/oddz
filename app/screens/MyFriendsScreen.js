@@ -1,12 +1,12 @@
 import React, {Component, PropTypes} from 'react';
-import {View, Text, StyleSheet, ListView} from 'react-native';
+import {View, Text, StyleSheet, ListView, Button} from 'react-native';
 import FirebaseApp, { FireDB } from '../FirebaseApp';
-import { Button, List, ListItem } from 'react-native-elements';
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#F5FCFF'
+    row: {
+        flexDirection: 'row',
+        padding: 10,
+        justifyContent: 'space-between'
     }
 });
 
@@ -28,12 +28,7 @@ class MyFriendsScreen extends Component{
         this.renderRow = this.renderRow.bind(this);
         this.listenUserFriends = this.listenUserFriends.bind(this);
         this.unlistenUserFriends = this.unlistenUserFriends.bind(this);
-        this.goBack = this.goBack.bind(this);
         this.viewUserInfo = this.viewUserInfo.bind(this);
-    }
-
-    goBack(){
-        this.props.navigator.pop();
     }
 
     viewUserInfo(userId){
@@ -42,10 +37,27 @@ class MyFriendsScreen extends Component{
 
     renderRow(rowData){
         return (
-            <ListItem title={rowData.screenName}
-                      onPress={function(){
+            <View style={styles.row}>
+                <Text>{rowData.screenName}</Text>
+                <Button
+                    title=">"
+                    color="#2196f3"
+                    onPress={function(){
                         this.viewUserInfo(rowData.key);
-                      }.bind(this)}
+                    }.bind(this)}
+                />
+            </View>
+        );
+    }
+
+    renderSeparator(sectionID, rowID, adjacentRowHighlighted){
+        return (
+            <View
+                key={`${sectionID}-${rowID}`}
+                style={{
+                  height: adjacentRowHighlighted ? 4 : 1,
+                  backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#CCCCCC'
+                }}
             />
         );
     }
@@ -72,19 +84,13 @@ class MyFriendsScreen extends Component{
 
     render(){
         return(
-            <View style={styles.container}>
-                <Button
-                    title="Back"
-                    backgroundColor="#e0e0e0"
-                    onPress={this.goBack}
+            <View style={this.props.style}>
+                <ListView
+                    dataSource={ds.cloneWithRows(this.state.friends)}
+                    renderRow={this.renderRow}
+                    renderSeparator={this.renderSeparator}
+                    enableEmptySections
                 />
-                <List>
-                    <ListView
-                        dataSource={ds.cloneWithRows(this.state.friends)}
-                        renderRow={this.renderRow}
-                        enableEmptySections
-                    />
-                </List>
             </View>
         );
     }

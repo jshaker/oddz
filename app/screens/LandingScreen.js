@@ -1,6 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-import { Button } from 'react-native-elements';
+import {View, Text, StyleSheet,Button} from 'react-native';
 import {LoginScreenNavigation, RegisterScreenNavigation, HomeScreenNavigation} from './ScreenNavs';
 import { LoginManager, AccessToken } from 'react-native-fbsdk';
 import FirebaseApp, {FacebookAuthProvider} from '../FirebaseApp';
@@ -46,17 +45,17 @@ class LandingScreen extends Component{
             <View style={this.props.style}>
                 <Button
                     title="Log In"
-                    backgroundColor="#ffc107"
+                    color="#ffc107"
                     onPress={this.redirectLogin}
                 />
                 <Button
                     title="Sign Up"
-                    backgroundColor="#8bc34a"
+                    color="#8bc34a"
                     onPress={this.redirectRegister}
                 />
                 <Button
                     title="Continue With Facebook"
-                    backgroundColor="#3b5998"
+                    color="#3b5998"
                     onPress={this.loginWithFacebook}
                 />
             </View>
