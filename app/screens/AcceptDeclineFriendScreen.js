@@ -107,6 +107,12 @@ export default class AcceptDeclineFriendScreen extends Component {
       }.bind(this));
       this.listenerChildRemoved = this.requestsRef.on('child_removed', function(snapshot) {
           const requestList = [...this.state.friendRequests]
+          for(var i=0; i<requestList.length; i++){
+              if(requestList[i].id == snapshot.key){
+                  requestList.splice(i, 1);
+                  break;
+              }
+          }
           this.setState({friendRequests: requestList})
       }.bind(this));
   }
