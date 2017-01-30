@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {View, Text, StyleSheet, Button} from 'react-native';
 import FirebaseApp, { FireDB } from '../FirebaseApp';
 import CompleteRegistrationModal from '../modals/CompleteRegistrationModal';
-import { AddFriendsScreenNavigation, MyFriendsScreenNavigation, AcceptDeclineFriendScreenNavigation } from './ScreenNavs';
+import { AddFriendsScreenNavigation, MyFriendsScreenNavigation, AcceptDeclineFriendScreenNavigation, ChallengeScreenNavigation } from './ScreenNavs';
 
 class HomeScreen extends Component{
 
@@ -23,6 +23,7 @@ class HomeScreen extends Component{
         this.redirectAddFriends = this.redirectAddFriends.bind(this);
         this.redirectMyFriends = this.redirectMyFriends.bind(this);
         this.redirectFriendRequests = this.redirectFriendRequests.bind(this);
+        this.redirectChallenge = this.redirectChallenge.bind(this);
 
     }
 
@@ -70,6 +71,10 @@ class HomeScreen extends Component{
         this.props.navigator.push(AcceptDeclineFriendScreenNavigation);
     }
 
+    redirectChallenge(){
+        this.props.navigator.push(ChallengeScreenNavigation);
+    }
+
     render(){
         return(
             <View style={this.props.style}>
@@ -91,6 +96,12 @@ class HomeScreen extends Component{
                     title="Friend Requests"
                     color="#ffc107"
                     onPress={this.redirectFriendRequests}
+                />
+                <Button
+                    raised
+                    title="Challenge"
+                    color="#ffc107"
+                    onPress={this.redirectChallenge}
                 />
                 <Button
                     raised
