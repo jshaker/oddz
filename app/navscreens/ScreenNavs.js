@@ -5,8 +5,11 @@ import AddFriendsScreen from './AddFriendsScreen';
 import LandingScreen from '../landingscreens/LandingScreen';
 import MyFriendsScreen from './MyFriendsScreen';
 import AcceptDeclineFriendScreen from './FriendRequestsScreen';
+import ChallengeScreen from './ChallengeScreen';
+
 
 export const HomeScreenNavigation = {screen: HomeScreen, title: 'Home', showBackButton: false};
 export const AddFriendsScreenNavigation = {screen: AddFriendsScreen, title: 'Add Friends', showBackButton: true};
 export const MyFriendsScreenNavigation = {screen:MyFriendsScreen, title: 'My Friends', showBackButton: true};
 export const AcceptDeclineFriendScreenNavigation = {screen:AcceptDeclineFriendScreen, title: 'Friend Requests', showBackButton: true};
+export const ChallengeScreenNavigation = {screen:ChallengeScreen, title: 'Challenge!', showBackButton: true};
