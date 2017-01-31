@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import FirebaseApp, { FireDB } from '../FirebaseApp';
 import Base64 from 'base-64';
 import {StyleSheet,Text,View,Button,TextInput, Modal, TouchableHighlight} from 'react-native';
+import FindFriendModal from '../modals/FindFriendModal';
 
 const styles = StyleSheet.create({
     container: {
@@ -31,30 +32,20 @@ class ChallengeScreen extends Component {
         modalVisible: false,
       };
 
+      this.handleTouch = this.handleTouch.bind(this);
+    }
+
+
+    async handleTouch(data){
+      const userId = await FirebaseApp.auth().currentUser.uid;
+      this.setState({modalVisible: false, challengeeID: data, challengerID: userId})
     }
 
   render() {
+    console.log(this.state);
     return (
       <View style={this.props.style}>
-        <Modal
-            animationType={"slide"}
-            transparent={false}
-            visible={this.state.modalVisible}
-            onRequestClose={() => {alert("Modal has been closed.")}}
-            >
-           <View style={{marginTop: 22}}>
-            <View>
-              <Text>Test</Text>
-
-              <TouchableHighlight onPress={() => {
-                this.setState({modalVisible: false})
-              }}>
-                <Text>Hide Modal</Text>
-              </TouchableHighlight>
-
-            </View>
-           </View>
-          </Modal>
+        <FindFriendModal visible={this.state.modalVisible} handleTouch={this.handleTouch} />
           <View style={styles.container}>
             <Text> Title </Text>
             <TextInput
