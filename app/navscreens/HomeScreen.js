@@ -38,7 +38,7 @@ class HomeScreen extends Component{
 
     async logout(){
         await FirebaseApp.auth().signOut();
-        this.props.navigator.popToTop(0);
+        this.props.topLevelNavigator.popToTop(0);
     }
 
     async listenUserInfo(){
@@ -105,7 +105,8 @@ class HomeScreen extends Component{
 
 
 HomeScreen.propTypes = {
-    navigator: PropTypes.object.isRequired
+    navigator: PropTypes.object.isRequired,
+    topLevelNavigator: PropTypes.object.isRequired
 };
 
 export default HomeScreen;

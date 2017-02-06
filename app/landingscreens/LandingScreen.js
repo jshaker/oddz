@@ -1,6 +1,8 @@
 import React, {Component, PropTypes} from 'react';
 import {View, Text, StyleSheet,Button} from 'react-native';
-import {LoginScreenNavigation, RegisterScreenNavigation, HomeScreenNavigation} from './ScreenNavs';
+import LoginScreen from './LoginScreen';
+import RegisterScreen from './RegisterScreen';
+import NavApp from '../NavApp';
 import { LoginManager, AccessToken } from 'react-native-fbsdk';
 import FirebaseApp, {FacebookAuthProvider} from '../FirebaseApp';
 
@@ -14,24 +16,23 @@ class LandingScreen extends Component{
     }
 
     redirectLogin(){
-        this.props.navigator.push(LoginScreenNavigation);
+        this.props.navigator.push({screen: LoginScreen});
     }
 
     redirectRegister(){
-        this.props.navigator.push(RegisterScreenNavigation);
+        this.props.navigator.push({screen: RegisterScreen});
     }
 
     async loginWithFacebook(){
         try{
             const result = await LoginManager.logInWithReadPermissions(['public_profile']);
             if(result.isCancelled){
-                console.log("test");
                 return;
             }
             const { accessToken } = await AccessToken.getCurrentAccessToken();
             const credential = FacebookAuthProvider.credential(accessToken);
             await FirebaseApp.auth().signInWithCredential(credential);
-            this.props.navigator.push(HomeScreenNavigation);
+            this.props.navigator.push({screen: NavApp});
         }
         catch(error){
             console.log("error",error);

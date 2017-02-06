@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import FirebaseApp from '../FirebaseApp';
 import {StyleSheet,Text,View,Navigator,Button,TextInput} from 'react-native';
-import HomeScreenNavigation from './ScreenNavs';
+import NavApp from '../NavApp';
 
 class LoginScreen extends Component {
 
@@ -12,16 +12,21 @@ class LoginScreen extends Component {
             password: ""
         };
         this.login = this.login.bind(this);
+        this.back = this.back.bind(this);
     }
 
     async login() {
         try {
             await FirebaseApp.auth().signInWithEmailAndPassword(this.state.email, this.state.password);
-            this.props.navigator.push(HomeScreenNavigation);
+            this.props.navigator.push({screen: NavApp});
 
         } catch (error) {
 
         }
+    }
+
+    back(){
+        this.props.navigator.pop();
     }
 
     render() {
@@ -44,6 +49,11 @@ class LoginScreen extends Component {
                     title="Log In"
                     color="#ffc107"
                     onPress={this.login}
+                />
+                <Button
+                    title="Back"
+                    color="#e0e0e0"
+                    onPress={this.back}
                 />
             </View>
         );

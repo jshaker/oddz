@@ -115,7 +115,8 @@ class AddFriendsScreen extends Component {
 }
 
 AddFriendsScreen.propTypes = {
-    navigator: PropTypes.object.isRequired
+    navigator: PropTypes.object.isRequired,
+    topLevelNavigator: PropTypes.object.isRequired
 };
 
 export default AddFriendsScreen;
