@@ -36,18 +36,18 @@ class ChallengeScreen extends Component {
       this.sendChallenge = this.sendChallenge.bind(this);
     }
 
-    sendChallenge(data){
-      const challengeKey = FireDB.ref(`challenges/${data.challengerID}`).push().key;
+    async sendChallenge(data){
+      const challengeKey = await FireDB.ref(`challenges/${data.challengerID}`).push().key;
       const challengerData = {
         title: data.title,
         description: data.description,
         challengerID: data.challengerID
-      }
+      };
       const challengeeData = {
         title: data.title,
         description: data.description,
         challengeeID: data.challengeeID
-      }
+      };
       const updates = {};
       updates[`challenges/${data.challengerID}/${challengeKey}`] = challengeeData;
       updates[`challenges/${data.challengeeID}/${challengeKey}`] = challengerData;
@@ -56,7 +56,7 @@ class ChallengeScreen extends Component {
 
     async handleTouch(data){
       const userId = await FirebaseApp.auth().currentUser.uid;
-      this.setState({modalVisible: false, challengeeID: data, challengerID: userId})
+      this.setState({modalVisible: false, challengeeID: data, challengerID: userId});
     }
 
   render() {
