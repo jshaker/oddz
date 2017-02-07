@@ -38,14 +38,19 @@ class ChallengeScreen extends Component {
 
     sendChallenge(data){
       const challengeKey = FireDB.ref(`challenges/${data.challengerID}`).push().key;
-      const challengeData = {
+      const challengerData = {
         title: data.title,
         description: data.description,
         challengerID: data.challengerID
       }
+      const challengeeData = {
+        title: data.title,
+        description: data.description,
+        challengeeID: data.challengeeID
+      }
       const updates = {};
-      updates[`challenges/${data.challengerID}/${challengeKey}`] = challengeData;
-      updates[`challenges/${data.challengeeID}/${challengeKey}`] = challengeData;
+      updates[`challenges/${data.challengerID}/${challengeKey}`] = challengeeData;
+      updates[`challenges/${data.challengeeID}/${challengeKey}`] = challengerData;
       return FireDB.ref().update(updates);
     }
 
