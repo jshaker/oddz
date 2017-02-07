@@ -33,8 +33,21 @@ class ChallengeScreen extends Component {
       };
 
       this.handleTouch = this.handleTouch.bind(this);
+      this.sendChallenge = this.sendChallenge.bind(this);
     }
 
+    sendChallenge(data){
+      const challengeKey = FireDB.ref(`challenges/${data.challengerID}`).push().key;
+      const challengeData = {
+        title: data.title,
+        description: data.description,
+        challengerID: data.challengerID
+      }
+      const updates = {};
+      updates[`challenges/${data.challengerID}/${challengeKey}`] = challengeData;
+      updates[`challenges/${data.challengeeID}/${challengeKey}`] = challengeData;
+      return FireDB.ref().update(updates);
+    }
 
     async handleTouch(data){
       const userId = await FirebaseApp.auth().currentUser.uid;
@@ -61,6 +74,7 @@ class ChallengeScreen extends Component {
               onChangeText={(description) => this.setState({description})}
               value={this.state.description}
             />
+            <Text> Friend Challenged: {this.state.challengeeID} </Text>
             <Button
               onPress={() => {
                 this.setState({modalVisible: true})
@@ -68,6 +82,14 @@ class ChallengeScreen extends Component {
               title="Challenge Friend!"
               color="#841584"
               accessibilityLabel="Pick a friend to challenge"
+            />
+            <Button
+              onPress={() => {
+                this.sendChallenge(this.state)
+              }}
+              title="Send Challenge!"
+              color="blue"
+              accessibilityLabel="Send Challenge"
             />
           </View>
       </View>
