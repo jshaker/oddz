@@ -41,18 +41,12 @@ class ChallengeScreen extends Component {
       const challengerData = {
         title: data.title,
         description: data.description,
-        challenger:{
-          challengerID: data.challengerID
-        }
-
+        challengerID: data.challengerID
       }
       const challengeeData = {
         title: data.title,
         description: data.description,
-        challengee:{
-          challengeeID: data.challengeeID
-        }
-
+        challengeeID: data.challengeeID
       }
       const updates = {};
       updates[`challenges/${data.challengerID}/${challengeKey}`] = challengeeData;
