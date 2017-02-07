@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import FirebaseApp from '../FirebaseApp';
 import {StyleSheet,Text,View,Navigator,TextInput,Button} from 'react-native';
-import { HomeScreenNavigation } from './ScreenNavs';
+import NavApp from '../NavApp';
 
 
 class RegisterScreen extends Component {
@@ -13,15 +13,20 @@ class RegisterScreen extends Component {
             password: ""
         };
         this.signup = this.signup.bind(this);
+        this.back = this.back.bind(this);
     }
 
     async signup() {
         try {
             await FirebaseApp.auth().createUserWithEmailAndPassword(this.state.email, this.state.password);
-            this.props.navigator.push(HomeScreenNavigation);
+            this.props.navigator.push({screen: NavApp});
         } catch (error) {
 
         }
+    }
+
+    back(){
+        this.props.navigator.pop();
     }
 
     render() {
@@ -44,6 +49,11 @@ class RegisterScreen extends Component {
                     title="Sign Up"
                     color="#8bc34a"
                     onPress={this.signup}
+                />
+                <Button
+                    title="Back"
+                    color="#e0e0e0"
+                    onPress={this.back}
                 />
             </View>
         );

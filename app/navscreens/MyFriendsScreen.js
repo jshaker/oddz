@@ -98,7 +98,8 @@ class MyFriendsScreen extends Component{
 
 
 MyFriendsScreen.propTypes = {
-    navigator: PropTypes.object.isRequired
+    navigator: PropTypes.object.isRequired,
+    topLevelNavigator: PropTypes.object.isRequired
 };
 
 export default MyFriendsScreen;
