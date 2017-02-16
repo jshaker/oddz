@@ -1,0 +1,1 @@
+export const ADD_TO_FRIENDSLIST = 'ADD_TO_FRIENDSLIST';

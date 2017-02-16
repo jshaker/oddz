@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
-import {HomeScreenNavigation} from './navscreens/ScreenNavs';
 import { Navigator, View, Text, TouchableHighlight, StyleSheet } from 'react-native';
+import { bindActionCreators } from 'redux';
+import {connect} from 'react-redux';
+import {HomeScreenNavigation} from './navscreens/ScreenNavs';
+import { addToFriendsList } from './actions/friendsListActions';
+import FirebaseApp, {FireDB} from './FirebaseApp';
 
 const styles = StyleSheet.create({
     screen: {
@@ -10,7 +14,39 @@ const styles = StyleSheet.create({
     }
 });
 
-export default class NavApp extends Component {
+class NavApp extends Component {
+
+    constructor(props,context){
+        super(props,context);
+
+
+        this.friendsRef = null;
+        this.friendsListener = null;
+
+
+        this.listenUserFriends = this.listenUserFriends.bind(this);
+        this.unlistenUserFriends = this.unlistenUserFriends.bind(this);
+    }
+
+    componentWillMount(){
+        this.listenUserFriends();
+    }
+
+    componentWillUnmount(){
+        this.unlistenUserFriends();
+    }
+
+    async listenUserFriends(){
+        this.friendsRef = FireDB.ref('friends/' + await FirebaseApp.auth().currentUser.uid);
+        this.friendsListener = this.friendsRef.on('child_added', function(data){
+            this.props.actions.addToFriendsList({[data.key]:data.val()});
+        }.bind(this));
+    }
+
+    unlistenUserFriends(){
+        this.friendsRef.off('child_added',this.friendsListener);
+    }
+
     render() {
         return (
             <Navigator initialRoute={HomeScreenNavigation}
@@ -50,3 +86,11 @@ export default class NavApp extends Component {
         );
     }
 }
+
+function mapDispatchToProps(dispatch){
+    return {
+        actions: bindActionCreators({ addToFriendsList }, dispatch)
+    };
+}
+
+export default connect(null, mapDispatchToProps)(NavApp);
