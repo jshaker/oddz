@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
 import {HomeScreenNavigation} from './navscreens/ScreenNavs';
 import { addToFriendsList } from './actions/friendsListActions';
-import { userLogout } from './actions/userActions';
+import { userLogout, setUserInfo } from './actions/userActions';
 import FirebaseApp, {FireDB} from './FirebaseApp';
 
 const styles = StyleSheet.create({
@@ -20,17 +20,17 @@ class NavApp extends Component {
     constructor(props,context){
         super(props,context);
 
-
         this.friendsRef = null;
         this.friendsListener = null;
-
 
         this.listenUserFriends = this.listenUserFriends.bind(this);
         this.unlistenUserFriends = this.unlistenUserFriends.bind(this);
     }
 
     componentWillMount(){
-        this.listenUserFriends();
+        this.listenUserInfo().then(function(){
+            this.listenUserFriends();
+        }.bind(this));
     }
 
     componentWillUnmount(){
@@ -38,8 +38,17 @@ class NavApp extends Component {
         this.props.actions.userLogout();
     }
 
+    async listenUserInfo(){
+        const currentUserId = await FirebaseApp.auth().currentUser.uid;
+        const userRef = await FireDB.ref('users/' + currentUserId);
+        return userRef.once('value', function(data){
+            const userInfo = Object.assign(data.val(), {key: data.key});
+            this.props.actions.setUserInfo(userInfo);
+        }.bind(this));
+    }
+
     async listenUserFriends(){
-        this.friendsRef = await FireDB.ref('friends/' + FirebaseApp.auth().currentUser.uid);
+        this.friendsRef = await FireDB.ref('friends/' + this.props.userInfo.key);
         this.friendsListener = this.friendsRef.on('child_added', function(data){
             this.props.actions.addToFriendsList({[data.key]:data.val()});
         }.bind(this));
@@ -89,10 +98,16 @@ class NavApp extends Component {
     }
 }
 
-function mapDispatchToProps(dispatch){
+function mapStateToProps(state, ownProps){
     return {
-        actions: bindActionCreators({ addToFriendsList, userLogout }, dispatch)
+        userInfo: state.userInfo
     };
 }
 
-export default connect(null, mapDispatchToProps)(NavApp);
+function mapDispatchToProps(dispatch){
+    return {
+        actions: bindActionCreators({ addToFriendsList, userLogout, setUserInfo }, dispatch)
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(NavApp);
