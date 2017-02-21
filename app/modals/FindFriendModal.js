@@ -61,9 +61,9 @@ class FindFriendModal extends Component{
     }
 
     async listenUserFriends(){
-        this.friendsRef = FireDB.ref('friends/' + this.props.userInfo);
+        this.friendsRef = FireDB.ref('friends/' + this.props.userKey);
         this.listener = this.friendsRef.on('child_added', function(data){
-            const friendsList = [...this.state.friends,{screenName:data.val(), key: data.key}];
+            const friendsList = [...this.state.friends,{screenName:data.val().screenName, key: data.key}];
             this.setState({friends: friendsList});
         }.bind(this));
     }
@@ -112,6 +112,7 @@ FindFriendModal.propTypes = {
 
 function mapStateToProps(state, ownProps){
     return {
+        userKey: state.userKey,
         userInfo: state.userInfo
     };
 }
