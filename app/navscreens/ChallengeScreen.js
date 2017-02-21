@@ -55,7 +55,7 @@ class ChallengeScreen extends Component {
     }
 
     handleTouch(data){
-        this.setState({modalVisible: false, challengeeID: data, challengerID: this.props.userInfo.key});
+        this.setState({modalVisible: false, challengeeID: data, challengerID: this.props.userKey});
     }
 
     render() {
@@ -107,7 +107,7 @@ ChallengeScreen.propTypes = {
 
 function mapStateToProps(state, ownProps){
     return {
-        userInfo: state.userInfo
+        userKey: state.userKey
     };
 }
 
