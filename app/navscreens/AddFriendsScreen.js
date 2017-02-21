@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-import FirebaseApp, { FireDB } from '../FirebaseApp';
+import {connect} from 'react-redux';
+import { FireDB } from '../FirebaseApp';
 import Base64 from 'base-64';
 import {StyleSheet,Text,View,ListView,Button,TextInput} from 'react-native';
 
@@ -22,27 +23,10 @@ class AddFriendsScreen extends Component {
             userNode: {}
         };
         this.renderRow = this.renderRow.bind(this);
-        this.getUserNode = this.getUserNode.bind(this);
     }
 
-    componentWillMount(){
-        this.getUserNode();
-    }
-
-    async getUserNode(){
-        const currentUserId = await FirebaseApp.auth().currentUser.uid;
-        const screenNameRef = FireDB.ref('users/' + currentUserId);
-        screenNameRef.once('value', function(snapshot) {
-            console.log(snapshot.val())
-            this.setState({userNode: snapshot.val()})
-            console.log(this.state.userNode)
-        }.bind(this));
-
-    }
-
-    async addFriend(userID){
-        const currentUserId = await FirebaseApp.auth().currentUser.uid;
-        return FireDB.ref(`friendRequests/${userID}/${currentUserId}`).set(this.state.userNode);
+    addFriend(userID){
+        return FireDB.ref(`friendRequests/${userID}/${this.props.userInfo.key}`).set(this.props.userInfo);
     }
 
     async search(text){
@@ -136,4 +120,10 @@ AddFriendsScreen.propTypes = {
     topLevelNavigator: PropTypes.object.isRequired
 };
 
-export default AddFriendsScreen;
+function mapStateToProps(state, ownProps){
+    return {
+        userInfo: state.userInfo
+    };
+}
+
+export default connect(mapStateToProps)(AddFriendsScreen);

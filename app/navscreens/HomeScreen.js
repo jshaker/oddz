@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {View, Text, StyleSheet, Button} from 'react-native';
-import FirebaseApp, { FireDB } from '../FirebaseApp';
+import {connect} from 'react-redux';
+import FirebaseApp from '../FirebaseApp';
 import CompleteRegistrationModal from '../modals/CompleteRegistrationModal';
 import { AddFriendsScreenNavigation, MyFriendsScreenNavigation, AcceptDeclineFriendScreenNavigation, ChallengeScreenNavigation } from './ScreenNavs';
 
@@ -10,16 +11,10 @@ class HomeScreen extends Component{
     constructor(props,context){
         super(props,context);
         this.state = {
-            userInfo: {},
             userInfoModal: false
         };
 
-        this.userRef = null;
-        this.listener = null;
-
         this.logout = this.logout.bind(this);
-        this.listenUserInfo = this.listenUserInfo.bind(this);
-        this.unlistenUserInfo = this.unlistenUserInfo.bind(this);
         this.redirectAddFriends = this.redirectAddFriends.bind(this);
         this.redirectMyFriends = this.redirectMyFriends.bind(this);
         this.redirectFriendRequests = this.redirectFriendRequests.bind(this);
@@ -27,36 +22,9 @@ class HomeScreen extends Component{
 
     }
 
-    componentWillMount(){
-        this.listenUserInfo();
-    }
-
-
-    componentWillUnmount(){
-        this.unlistenUserInfo();
-    }
-
-
     async logout(){
         await FirebaseApp.auth().signOut();
         this.props.topLevelNavigator.popToTop(0);
-    }
-
-    async listenUserInfo(){
-        this.userRef = FireDB.ref('users/' + await FirebaseApp.auth().currentUser.uid);
-        this.listener = this.userRef.on('value', function(data){
-            if(data.val() == null){
-                this.setState({userInfoModal: true});
-            }
-            else{
-                this.setState({userInfoModal: false});
-                this.setState({userInfo: data.val()});
-            }
-        }.bind(this));
-    }
-
-    unlistenUserInfo(){
-        this.userRef.off('value', this.listener);
     }
 
     redirectAddFriends(){
@@ -78,7 +46,7 @@ class HomeScreen extends Component{
     render(){
         return(
             <View style={this.props.style}>
-                <CompleteRegistrationModal visible={this.state.userInfoModal} />
+                <CompleteRegistrationModal visible={this.props.userInfo === {}} />
                 <Button
                     raised
                     title="Add Friends"
@@ -120,4 +88,11 @@ HomeScreen.propTypes = {
     topLevelNavigator: PropTypes.object.isRequired
 };
 
-export default HomeScreen;
+
+function mapStateToProps(state, ownProps){
+    return {
+        userInfo: state.userInfo
+    };
+}
+
+export default connect(mapStateToProps)(HomeScreen);
