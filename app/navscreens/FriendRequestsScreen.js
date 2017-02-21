@@ -90,9 +90,9 @@ class FriendRequestsScreen extends Component {
     }
 
     async listenFriendRequests(){
-        this.requestsRef = FireDB.ref('friendRequests/' + this.props.userInfo.key);
+        this.requestsRef = FireDB.ref('friendRequests/' + this.props.userKey);
         this.listener = this.requestsRef.on('child_added', function(snapshot) {
-            const requestList = [...this.state.friendRequests, {id: snapshot.key, screenName: snapshot.val()}]
+            const requestList = [...this.state.friendRequests, {id: snapshot.key, screenName: snapshot.val().screenName}]
             this.setState({friendRequests: requestList})
         }.bind(this));
         this.listenerChildRemoved = this.requestsRef.on('child_removed', function(snapshot) {
@@ -114,13 +114,13 @@ class FriendRequestsScreen extends Component {
 
     async acceptFriend(friendID, friendName){
 
-        FireDB.ref(`friends/${friendID}/${this.props.userInfo.key}`).set(this.props.userInfo);
-        FireDB.ref(`friends/${this.props.userInfo.key}/${friendID}`).set(friendName);
-        return FireDB.ref(`friendRequests/${this.props.userInfo.key}/${friendID}`).set(null);
+        FireDB.ref(`friends/${friendID}/${this.props.userKey}`).set(this.props.userInfo.screenName);
+        FireDB.ref(`friends/${this.props.userKey}/${friendID}`).set(friendName);
+        return FireDB.ref(`friendRequests/${this.props.userKey}/${friendID}`).set(null);
     }
 
     async rejectFriend(friendID, friendName){
-        return FireDB.ref(`friendRequests/${this.props.userInfo.key}/${friendID}`).set(null);
+        return FireDB.ref(`friendRequests/${this.props.userKey}/${friendID}`).set(null);
     }
 
 
@@ -146,6 +146,7 @@ FriendRequestsScreen.propTypes = {
 
 function mapStateToProps(state, ownProps){
     return {
+        userKey: state.userKey,
         userInfo: state.userInfo
     };
 }

@@ -18,12 +18,10 @@ class CompleteRegistrationModal extends Component{
     }
 
     async registerUser(){
-        const currentUserId = await FirebaseApp.auth().currentUser.uid;
-        FireDB.ref('users/' + currentUserId).set(this.state).then(function(){
-            const userInfo = Object.assign({},this.state, {key: currentUserId});
-            this.props.actions.setUserInfo(userInfo);
+        FireDB.ref('users/' + this.props.userKey).set(this.state).then(function(){
+            this.props.actions.setUserInfo(this.state);
         }.bind(this), function(error){
-            console.log("fuck",error);
+            console.log("error in registerUser fuction",error);
         });
     }
 
@@ -60,7 +58,7 @@ CompleteRegistrationModal.propTypes = {
 
 function mapStateToProps(state, ownProps){
     return {
-        userInfo: state.userInfo
+        userKey: state.userKey,
     };
 }
 
