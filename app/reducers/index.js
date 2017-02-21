@@ -1,11 +1,13 @@
 import {combineReducers} from 'redux';
-import {USER_LOGOUT} from '../actions/actionTypes';
 import friendsList from './friendsListReducer';
 import userInfo from './userInfoReducer';
+import userKey from './userKeyReducer';
+import {USER_LOGOUT} from '../actions/actionTypes';
 
 const appReducer = combineReducers({
     friendsList,
-    userInfo
+    userInfo,
+    userKey
 });
 
 const rootReducer = (state, action) => {

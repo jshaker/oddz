@@ -42,8 +42,11 @@ class NavApp extends Component {
         const currentUserId = await FirebaseApp.auth().currentUser.uid;
         const userRef = await FireDB.ref('users/' + currentUserId);
         return userRef.once('value', function(data){
-            const userInfo = Object.assign(data.val(), {key: data.key});
-            this.props.actions.setUserInfo(userInfo);
+            const userInfoObj = data.val();
+            if(userInfoObj != null){
+                const userInfo = Object.assign(data.val(), {key: data.key});
+                this.props.actions.setUserInfo(userInfo);
+            }
         }.bind(this));
     }
 

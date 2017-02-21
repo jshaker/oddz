@@ -28,8 +28,7 @@ class FriendRequestsScreen extends Component {
     constructor(props,context){
         super(props,context);
         this.state = {
-            friendRequests: [],
-            userNode: {}
+            friendRequests: []
         };
 
         this.requestsRef = null;
@@ -40,26 +39,17 @@ class FriendRequestsScreen extends Component {
         this.renderRow = this.renderRow.bind(this);
         this.listenFriendRequests = this.listenFriendRequests.bind(this);
         this.unlistenFriendRequests = this.unlistenFriendRequests.bind(this);
-        this.getUserNode = this.getUserNode.bind(this);
         this.acceptFriend = this.acceptFriend.bind(this);
         this.rejectFriend = this.rejectFriend.bind(this);
     }
 
     componentWillMount(){
         this.listenFriendRequests();
-        this.getUserNode();
     }
 
     componentWillUnmount(){
         this.unlistenFriendRequests();
     }
-
-      async getUserNode(){
-          const screenNameRef = await FireDB.ref('users/' + this.props.userInfo.key);
-          screenNameRef.once('value', function(snapshot) {
-              this.setState({userNode: snapshot.val()})
-          }.bind(this));
-      }
 
     renderRow(rowData){
         return (
@@ -123,7 +113,8 @@ class FriendRequestsScreen extends Component {
     }
 
     async acceptFriend(friendID, friendName){
-        FireDB.ref(`friends/${friendID}/${this.props.userInfo.key}`).set(this.state.userNode);
+
+        FireDB.ref(`friends/${friendID}/${this.props.userInfo.key}`).set(this.props.userInfo);
         FireDB.ref(`friends/${this.props.userInfo.key}/${friendID}`).set(friendName);
         return FireDB.ref(`friendRequests/${this.props.userInfo.key}/${friendID}`).set(null);
     }
