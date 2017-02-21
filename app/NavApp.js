@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
 import {HomeScreenNavigation} from './navscreens/ScreenNavs';
 import { addToFriendsList } from './actions/friendsListActions';
+import { userLogout } from './actions/userActions';
 import FirebaseApp, {FireDB} from './FirebaseApp';
 
 const styles = StyleSheet.create({
@@ -34,10 +35,11 @@ class NavApp extends Component {
 
     componentWillUnmount(){
         this.unlistenUserFriends();
+        this.props.actions.userLogout();
     }
 
     async listenUserFriends(){
-        this.friendsRef = FireDB.ref('friends/' + await FirebaseApp.auth().currentUser.uid);
+        this.friendsRef = await FireDB.ref('friends/' + FirebaseApp.auth().currentUser.uid);
         this.friendsListener = this.friendsRef.on('child_added', function(data){
             this.props.actions.addToFriendsList({[data.key]:data.val()});
         }.bind(this));
@@ -89,7 +91,7 @@ class NavApp extends Component {
 
 function mapDispatchToProps(dispatch){
     return {
-        actions: bindActionCreators({ addToFriendsList }, dispatch)
+        actions: bindActionCreators({ addToFriendsList, userLogout }, dispatch)
     };
 }
 
