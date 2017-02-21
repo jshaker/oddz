@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {Modal, View, TextInput, Text, Button, TouchableHighlight, StyleSheet, ListView} from 'react-native';
+import {connect} from 'react-redux';
 import FirebaseApp, { FireDB } from '../FirebaseApp';
 
 const styles = StyleSheet.create({
@@ -60,7 +61,7 @@ class FindFriendModal extends Component{
     }
 
     async listenUserFriends(){
-        this.friendsRef = FireDB.ref('friends/' + await FirebaseApp.auth().currentUser.uid);
+        this.friendsRef = FireDB.ref('friends/' + this.props.userInfo);
         this.listener = this.friendsRef.on('child_added', function(data){
             const friendsList = [...this.state.friends,{screenName:data.val(), key: data.key}];
             this.setState({friends: friendsList});
@@ -104,10 +105,15 @@ class FindFriendModal extends Component{
     }
 }
 
-
 FindFriendModal.propTypes = {
     visible: PropTypes.bool,
     handleTouch: PropTypes.func
 };
 
-export default FindFriendModal;
+function mapStateToProps(state, ownProps){
+    return {
+        userInfo: state.userInfo
+    };
+}
+
+export default connect(mapStateToProps)(FindFriendModal);
