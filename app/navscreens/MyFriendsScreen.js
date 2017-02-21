@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
+import {connect} from 'react-redux';
 import {View, Text, StyleSheet, ListView, Button} from 'react-native';
-import FirebaseApp, { FireDB } from '../FirebaseApp';
 
 const styles = StyleSheet.create({
     row: {
@@ -17,17 +17,8 @@ class MyFriendsScreen extends Component{
 
     constructor(props,context){
         super(props,context);
-        this.state = {
-            friends: [],
-        };
-
-        this.friendsRef = null;
-        this.listener = null;
-
 
         this.renderRow = this.renderRow.bind(this);
-        this.listenUserFriends = this.listenUserFriends.bind(this);
-        this.unlistenUserFriends = this.unlistenUserFriends.bind(this);
         this.viewUserInfo = this.viewUserInfo.bind(this);
     }
 
@@ -38,7 +29,7 @@ class MyFriendsScreen extends Component{
     renderRow(rowData){
         return (
             <View style={styles.row}>
-                <Text>{rowData.screenName}</Text>
+                <Text>{rowData.userInfo}</Text>
                 <Button
                     title=">"
                     color="#2196f3"
@@ -62,31 +53,15 @@ class MyFriendsScreen extends Component{
         );
     }
 
-    componentWillMount(){
-        this.listenUserFriends();
-    }
-
-    componentWillUnmount(){
-        this.unlistenUserFriends();
-    }
-
-    async listenUserFriends(){
-        this.friendsRef = FireDB.ref('friends/' + await FirebaseApp.auth().currentUser.uid);
-        this.listener = this.friendsRef.on('child_added', function(data){
-            const friendsList = [...this.state.friends,{screenName:data.val(), key: data.key}];
-            this.setState({friends: friendsList});
-        }.bind(this));
-    }
-
-    unlistenUserFriends(){
-        this.friendsRef.off('child_added',this.listener);
-    }
-
     render(){
+        const friendsList = Object.keys(this.props.friendsList).map(function(id){
+            return {id, userInfo: this.props.friendsList[id]};
+        }.bind(this));
+
         return(
             <View style={this.props.style}>
                 <ListView
-                    dataSource={ds.cloneWithRows(this.state.friends)}
+                    dataSource={ds.cloneWithRows(friendsList)}
                     renderRow={this.renderRow}
                     renderSeparator={this.renderSeparator}
                     enableEmptySections
@@ -102,4 +77,10 @@ MyFriendsScreen.propTypes = {
     topLevelNavigator: PropTypes.object.isRequired
 };
 
-export default MyFriendsScreen;
+function mapStateToProps(state, ownProps){
+    return {
+        friendsList: state.friendsList
+    };
+}
+
+export default connect(mapStateToProps,null)(MyFriendsScreen);
