@@ -53,21 +53,11 @@ export default class FriendRequestsScreen extends Component {
         this.unlistenFriendRequests();
     }
 
-    // async getUserName(){
-    //     const currentUserId = await FirebaseApp.auth().currentUser.uid;
-    //     const screenNameRef = FireDB.ref('users/' + currentUserId + '/screenName');
-    //     screenNameRef.once('value', function(snapshot) {
-    //         this.setState({userName: snapshot.val()})
-    //     }.bind(this));
-    // }
-
       async getUserNode(){
           const currentUserId = await FirebaseApp.auth().currentUser.uid;
           const screenNameRef = FireDB.ref('users/' + currentUserId);
           screenNameRef.once('value', function(snapshot) {
-              console.log(snapshot.val())
               this.setState({userNode: snapshot.val()})
-              console.log(this.state.userNode)
           }.bind(this));
 
       }
