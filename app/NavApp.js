@@ -56,7 +56,7 @@ class NavApp extends Component {
     }
 
     async listenUserFriends(){
-        this.friendsRef = await FireDB.ref('friends/' + this.props.userInfo.key);
+        this.friendsRef = await FireDB.ref('friends/' + this.props.userKey);
         this.friendsListener = this.friendsRef.on('child_added', function(data){
             this.props.actions.addToFriendsList({[data.key]:data.val()});
         }.bind(this));
