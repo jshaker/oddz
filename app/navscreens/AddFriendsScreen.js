@@ -18,14 +18,31 @@ class AddFriendsScreen extends Component {
     constructor(props,context){
         super(props,context);
         this.state = {
-            users: ds.cloneWithRows([])
+            users: ds.cloneWithRows([]),
+            userNode: {}
         };
         this.renderRow = this.renderRow.bind(this);
+        this.getUserNode = this.getUserNode.bind(this);
+    }
+
+    componentWillMount(){
+        this.getUserNode();
+    }
+
+    async getUserNode(){
+        const currentUserId = await FirebaseApp.auth().currentUser.uid;
+        const screenNameRef = FireDB.ref('users/' + currentUserId);
+        screenNameRef.once('value', function(snapshot) {
+            console.log(snapshot.val())
+            this.setState({userNode: snapshot.val()})
+            console.log(this.state.userNode)
+        }.bind(this));
+
     }
 
     async addFriend(userID){
         const currentUserId = await FirebaseApp.auth().currentUser.uid;
-        return FireDB.ref(`friendRequests/${userID}/${currentUserId}`).set(false);
+        return FireDB.ref(`friendRequests/${userID}/${currentUserId}`).set(this.state.userNode);
     }
 
     async search(text){
@@ -120,4 +137,3 @@ AddFriendsScreen.propTypes = {
 };
 
 export default AddFriendsScreen;
-

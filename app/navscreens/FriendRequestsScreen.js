@@ -28,7 +28,7 @@ export default class FriendRequestsScreen extends Component {
         super(props,context);
         this.state = {
             friendRequests: [],
-            userName: ''
+            userNode: {}
         };
 
         this.requestsRef = null;
@@ -39,27 +39,28 @@ export default class FriendRequestsScreen extends Component {
         this.renderRow = this.renderRow.bind(this);
         this.listenFriendRequests = this.listenFriendRequests.bind(this);
         this.unlistenFriendRequests = this.unlistenFriendRequests.bind(this);
-        this.getUserName = this.getUserName.bind(this);
+        this.getUserNode = this.getUserNode.bind(this);
         this.acceptFriend = this.acceptFriend.bind(this);
         this.rejectFriend = this.rejectFriend.bind(this);
     }
 
     componentWillMount(){
         this.listenFriendRequests();
-        this.getUserName();
+        this.getUserNode();
     }
 
     componentWillUnmount(){
         this.unlistenFriendRequests();
     }
 
-    async getUserName(){
-        const currentUserId = await FirebaseApp.auth().currentUser.uid;
-        const screenNameRef = FireDB.ref('users/' + currentUserId + '/screenName');
-        screenNameRef.once('value', function(snapshot) {
-            this.setState({userName: snapshot.val()})
-        }.bind(this));
-    }
+      async getUserNode(){
+          const currentUserId = await FirebaseApp.auth().currentUser.uid;
+          const screenNameRef = FireDB.ref('users/' + currentUserId);
+          screenNameRef.once('value', function(snapshot) {
+              this.setState({userNode: snapshot.val()})
+          }.bind(this));
+
+      }
 
     renderRow(rowData){
         return (
@@ -124,7 +125,7 @@ export default class FriendRequestsScreen extends Component {
 
     async acceptFriend(friendID, friendName){
         const currentUserId = await FirebaseApp.auth().currentUser.uid;
-        FireDB.ref(`friends/${friendID}/${currentUserId}`).set(this.state.userName);
+        FireDB.ref(`friends/${friendID}/${currentUserId}`).set(this.state.userNode);
         FireDB.ref(`friends/${currentUserId}/${friendID}`).set(friendName);
         return FireDB.ref(`friendRequests/${currentUserId}/${friendID}`).set(null);
     }
