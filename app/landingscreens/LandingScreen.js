@@ -1,10 +1,14 @@
 import React, {Component, PropTypes} from 'react';
+import { bindActionCreators } from 'redux';
+import {connect} from 'react-redux';
 import {View, Text, StyleSheet,Button} from 'react-native';
 import LoginScreen from './LoginScreen';
 import RegisterScreen from './RegisterScreen';
 import NavApp from '../NavApp';
 import { LoginManager, AccessToken } from 'react-native-fbsdk';
+import { setUserKey } from '../actions/userActions';
 import FirebaseApp, {FacebookAuthProvider} from '../FirebaseApp';
+
 
 class LandingScreen extends Component{
 
@@ -31,7 +35,8 @@ class LandingScreen extends Component{
             }
             const { accessToken } = await AccessToken.getCurrentAccessToken();
             const credential = FacebookAuthProvider.credential(accessToken);
-            await FirebaseApp.auth().signInWithCredential(credential);
+            const {uid} = await FirebaseApp.auth().signInWithCredential(credential);
+            this.props.actions.setUserKey(uid);
             this.props.navigator.push({screen: NavApp});
         }
         catch(error){
@@ -68,4 +73,10 @@ LandingScreen.propTypes = {
     navigator: PropTypes.object.isRequired
 };
 
-export default LandingScreen;
+function mapDispatchToProps(dispatch){
+    return {
+        actions: bindActionCreators({ setUserKey }, dispatch)
+    };
+}
+
+export default connect(null, mapDispatchToProps)(LandingScreen);

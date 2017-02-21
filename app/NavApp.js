@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import {HomeScreenNavigation} from './navscreens/ScreenNavs';
 import { addToFriendsList } from './actions/friendsListActions';
 import { userLogout, setUserInfo, setUserKey } from './actions/userActions';
-import FirebaseApp, {FireDB} from './FirebaseApp';
+import {FireDB} from './FirebaseApp';
 
 const styles = StyleSheet.create({
     screen: {
@@ -20,39 +20,38 @@ class NavApp extends Component {
     constructor(props,context){
         super(props,context);
 
+        this.userRef = null;
+        this.userListener = null;
+
         this.friendsRef = null;
         this.friendsListener = null;
 
-        this.getUserKey = this.getUserKey.bind(this);
+        this.listenUserInfo = this.listenUserInfo.bind(this);
+        this.unlistenUserInfo = this.unlistenUserInfo.bind(this);
         this.listenUserFriends = this.listenUserFriends.bind(this);
         this.unlistenUserFriends = this.unlistenUserFriends.bind(this);
     }
 
     componentWillMount(){
-        this.getUserKey().then(function(){
-            this.listenUserInfo();
-            this.listenUserFriends();
-        }.bind(this));
+        this.listenUserInfo();
+        this.listenUserFriends();
     }
 
     componentWillUnmount(){
         this.unlistenUserFriends();
+        this.unlistenUserInfo();
         this.props.actions.userLogout();
     }
 
-    async getUserKey(){
-        const userId = await FirebaseApp.auth().currentUser.uid;
-        return this.props.actions.setUserKey(userId);
+    async listenUserInfo(){
+        this.userRef = await FireDB.ref('users/' + this.props.userKey);
+        this.userListener = this.userRef.on('value', function(data){
+            this.props.actions.setUserInfo(data.val());
+        }.bind(this));
     }
 
-    async listenUserInfo(){
-        const userRef = await FireDB.ref('users/' + this.props.userKey);
-        return userRef.once('value', function(data){
-            const result = data.val();
-            if(result != null){
-                this.props.actions.setUserInfo(result);
-            }
-        }.bind(this));
+    unlistenUserInfo(){
+        this.userRef.off('value', this.userListener);
     }
 
     async listenUserFriends(){
@@ -65,6 +64,7 @@ class NavApp extends Component {
     unlistenUserFriends(){
         this.friendsRef.off('child_added',this.friendsListener);
     }
+
 
     render() {
         return (

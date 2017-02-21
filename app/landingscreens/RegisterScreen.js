@@ -1,8 +1,10 @@
 import React, { Component, PropTypes } from 'react';
+import { bindActionCreators } from 'redux';
+import {connect} from 'react-redux';
 import FirebaseApp from '../FirebaseApp';
 import {StyleSheet,Text,View,Navigator,TextInput,Button} from 'react-native';
 import NavApp from '../NavApp';
-
+import { setUserKey } from '../actions/userActions';
 
 class RegisterScreen extends Component {
 
@@ -19,6 +21,7 @@ class RegisterScreen extends Component {
     async signup() {
         try {
             await FirebaseApp.auth().createUserWithEmailAndPassword(this.state.email, this.state.password);
+            this.props.actions.setUserKey(uid);
             this.props.navigator.push({screen: NavApp});
         } catch (error) {
 
@@ -64,5 +67,10 @@ RegisterScreen.propTypes = {
     navigator: PropTypes.object.isRequired
 };
 
-export default RegisterScreen;
+function mapDispatchToProps(dispatch){
+    return {
+        actions: bindActionCreators({ setUserKey }, dispatch)
+    };
+}
 
+export default connect(null, mapDispatchToProps)(RegisterScreen);
