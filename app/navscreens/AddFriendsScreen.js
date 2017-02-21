@@ -26,9 +26,7 @@ class AddFriendsScreen extends Component {
     }
 
     addFriend(userID){
-        const userInfo = Object.assign({}, this.props.userInfo);
-        delete userInfo.key;
-        return FireDB.ref(`friendRequests/${userID}/${this.props.userInfo.key}`).set(userInfo);
+        return FireDB.ref(`friendRequests/${userID}/${this.props.userKey}`).set(this.props.userInfo);
     }
 
     async search(text){
@@ -124,7 +122,8 @@ AddFriendsScreen.propTypes = {
 
 function mapStateToProps(state, ownProps){
     return {
-        userInfo: state.userInfo
+        userInfo: state.userInfo,
+        userKey: state.userKey
     };
 }
 
