@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-import FirebaseApp, { FireDB } from '../FirebaseApp';
+import {connect} from 'react-redux';
+import { FireDB } from '../FirebaseApp';
 import {
     StyleSheet,
     Text,
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
 
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
-export default class FriendRequestsScreen extends Component {
+class FriendRequestsScreen extends Component {
 
     constructor(props,context){
         super(props,context);
@@ -54,12 +55,10 @@ export default class FriendRequestsScreen extends Component {
     }
 
       async getUserNode(){
-          const currentUserId = await FirebaseApp.auth().currentUser.uid;
-          const screenNameRef = FireDB.ref('users/' + currentUserId);
+          const screenNameRef = await FireDB.ref('users/' + this.props.userInfo.key);
           screenNameRef.once('value', function(snapshot) {
               this.setState({userNode: snapshot.val()})
           }.bind(this));
-
       }
 
     renderRow(rowData){
@@ -101,7 +100,7 @@ export default class FriendRequestsScreen extends Component {
     }
 
     async listenFriendRequests(){
-        this.requestsRef = FireDB.ref('friendRequests/' + await FirebaseApp.auth().currentUser.uid );
+        this.requestsRef = FireDB.ref('friendRequests/' + this.props.userInfo.key);
         this.listener = this.requestsRef.on('child_added', function(snapshot) {
             const requestList = [...this.state.friendRequests, {id: snapshot.key, screenName: snapshot.val()}]
             this.setState({friendRequests: requestList})
@@ -124,15 +123,13 @@ export default class FriendRequestsScreen extends Component {
     }
 
     async acceptFriend(friendID, friendName){
-        const currentUserId = await FirebaseApp.auth().currentUser.uid;
-        FireDB.ref(`friends/${friendID}/${currentUserId}`).set(this.state.userNode);
-        FireDB.ref(`friends/${currentUserId}/${friendID}`).set(friendName);
-        return FireDB.ref(`friendRequests/${currentUserId}/${friendID}`).set(null);
+        FireDB.ref(`friends/${friendID}/${this.props.userInfo.key}`).set(this.state.userNode);
+        FireDB.ref(`friends/${this.props.userInfo.key}/${friendID}`).set(friendName);
+        return FireDB.ref(`friendRequests/${this.props.userInfo.key}/${friendID}`).set(null);
     }
 
     async rejectFriend(friendID, friendName){
-        const currentUserId = await FirebaseApp.auth().currentUser.uid;
-        return FireDB.ref(`friendRequests/${currentUserId}/${friendID}`).set(null);
+        return FireDB.ref(`friendRequests/${this.props.userInfo.key}/${friendID}`).set(null);
     }
 
 
@@ -154,3 +151,12 @@ FriendRequestsScreen.propTypes = {
     navigator: PropTypes.object.isRequired,
     topLevelNavigator: PropTypes.object.isRequired
 };
+
+
+function mapStateToProps(state, ownProps){
+    return {
+        userInfo: state.userInfo
+    };
+}
+
+export default connect(mapStateToProps)(FriendRequestsScreen);

@@ -29,7 +29,7 @@ class MyFriendsScreen extends Component{
     renderRow(rowData){
         return (
             <View style={styles.row}>
-                <Text>{rowData.userInfo}</Text>
+                <Text>{rowData.userInfo.screenName}</Text>
                 <Button
                     title=">"
                     color="#2196f3"
