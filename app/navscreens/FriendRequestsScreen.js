@@ -113,10 +113,12 @@ class FriendRequestsScreen extends Component {
     }
 
     async acceptFriend(friendID, friendName){
-
-        FireDB.ref(`friends/${friendID}/${this.props.userKey}`).set(this.props.userInfo.screenName);
-        FireDB.ref(`friends/${this.props.userKey}/${friendID}`).set(friendName);
-        return FireDB.ref(`friendRequests/${this.props.userKey}/${friendID}`).set(null);
+        const friendRef = FireDB.ref(`users/${friendID}`);
+        friendRef.once('value',function(friendInfo){
+            FireDB.ref(`friends/${friendID}/${this.props.userKey}`).set(this.props.userInfo);
+            FireDB.ref(`friends/${this.props.userKey}/${friendID}`).set(friendInfo.val());
+            FireDB.ref(`friendRequests/${this.props.userKey}/${friendID}`).set(null);
+        }.bind(this));
     }
 
     async rejectFriend(friendID, friendName){
