@@ -3,8 +3,8 @@ import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
 import FirebaseApp from '../FirebaseApp';
 import {StyleSheet,Text,View,Navigator,Button,TextInput} from 'react-native';
-import NavApp from '../NavApp';
 import { setUserKey } from '../actions/userActions';
+import LoadingScreen from './LoadingScreen';
 
 class LoginScreen extends Component {
 
@@ -22,7 +22,7 @@ class LoginScreen extends Component {
         try {
             const {uid} = await FirebaseApp.auth().signInWithEmailAndPassword(this.state.email, this.state.password);
             this.props.actions.setUserKey(uid);
-            this.props.navigator.push({screen: NavApp});
+            this.props.navigator.push({screen: LoadingScreen});
         } catch (error) {
 
         }

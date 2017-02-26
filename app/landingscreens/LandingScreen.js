@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {View, Text, StyleSheet,Button} from 'react-native';
 import LoginScreen from './LoginScreen';
 import RegisterScreen from './RegisterScreen';
-import NavApp from '../NavApp';
+import LoadingScreen from './LoadingScreen';
 import { LoginManager, AccessToken } from 'react-native-fbsdk';
 import { setUserKey } from '../actions/userActions';
 import FirebaseApp, {FacebookAuthProvider} from '../FirebaseApp';
@@ -37,7 +37,7 @@ class LandingScreen extends Component{
             const credential = FacebookAuthProvider.credential(accessToken);
             const {uid} = await FirebaseApp.auth().signInWithCredential(credential);
             this.props.actions.setUserKey(uid);
-            this.props.navigator.push({screen: NavApp});
+            this.props.navigator.push({screen: LoadingScreen});
         }
         catch(error){
             console.log("error",error);

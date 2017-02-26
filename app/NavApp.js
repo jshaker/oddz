@@ -20,38 +20,20 @@ class NavApp extends Component {
     constructor(props,context){
         super(props,context);
 
-        this.userRef = null;
-        this.userListener = null;
-
         this.friendsRef = null;
         this.friendsListener = null;
 
-        this.listenUserInfo = this.listenUserInfo.bind(this);
-        this.unlistenUserInfo = this.unlistenUserInfo.bind(this);
         this.listenUserFriends = this.listenUserFriends.bind(this);
         this.unlistenUserFriends = this.unlistenUserFriends.bind(this);
     }
 
     componentWillMount(){
-        this.listenUserInfo();
         this.listenUserFriends();
     }
 
     componentWillUnmount(){
         this.unlistenUserFriends();
-        this.unlistenUserInfo();
         this.props.actions.userLogout();
-    }
-
-    async listenUserInfo(){
-        this.userRef = await FireDB.ref('users/' + this.props.userKey);
-        this.userListener = this.userRef.on('value', function(data){
-            this.props.actions.setUserInfo(data.val());
-        }.bind(this));
-    }
-
-    unlistenUserInfo(){
-        this.userRef.off('value', this.userListener);
     }
 
     async listenUserFriends(){

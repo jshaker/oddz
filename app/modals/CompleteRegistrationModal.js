@@ -2,6 +2,8 @@ import React, {Component, PropTypes} from 'react';
 import {Modal, View, TextInput, Text, Button} from 'react-native';
 import {connect} from 'react-redux';
 import { FireDB } from '../FirebaseApp';
+import { setUserInfo } from '../actions/userActions';
+import { bindActionCreators } from 'redux';
 
 class CompleteRegistrationModal extends Component{
 
@@ -16,7 +18,9 @@ class CompleteRegistrationModal extends Component{
     }
 
     async registerUser(){
-        FireDB.ref('users/' + this.props.userKey).set(this.state);
+        FireDB.ref('users/' + this.props.userKey).set(this.state).then(function(){
+            this.props.actions.setUserInfo(this.state);
+        }.bind(this));
     }
 
     render(){
@@ -56,4 +60,10 @@ function mapStateToProps(state, ownProps){
     };
 }
 
-export default connect(mapStateToProps)(CompleteRegistrationModal);
+function mapDispatchToProps(dispatch){
+    return {
+        actions: bindActionCreators({ setUserInfo }, dispatch)
+    };
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(CompleteRegistrationModal);
