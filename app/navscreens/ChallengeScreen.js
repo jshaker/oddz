@@ -33,6 +33,7 @@ class ChallengeScreen extends Component {
         };
 
         this.handleTouch = this.handleTouch.bind(this);
+        this.closeModal = this.closeModal.bind(this);
         this.sendChallenge = this.sendChallenge.bind(this);
     }
 
@@ -58,10 +59,17 @@ class ChallengeScreen extends Component {
         this.setState({modalVisible: false, challengeeID: data, challengerID: this.props.userKey});
     }
 
+    closeModal(){
+        this.setState({modalVisible: false});
+    }
+
     render() {
         return (
             <View style={this.props.style}>
-                <FindFriendModal visible={this.state.modalVisible} handleTouch={this.handleTouch} />
+                <FindFriendModal visible={this.state.modalVisible}
+                                 handleTouch={this.handleTouch}
+                                 closeModal={this.closeModal}
+                />
                 <View style={styles.container}>
                     <Text> Title </Text>
                     <TextInput

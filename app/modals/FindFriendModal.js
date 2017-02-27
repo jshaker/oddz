@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {Modal, View, TextInput, Text, Button, TouchableHighlight, StyleSheet, ListView} from 'react-native';
 import {connect} from 'react-redux';
-import FirebaseApp, { FireDB } from '../FirebaseApp';
+import { FireDB } from '../FirebaseApp';
 
 const styles = StyleSheet.create({
     row: {
@@ -90,9 +90,7 @@ class FindFriendModal extends Component{
               <View>
 
                 <Button
-                  onPress={() => {
-                    this.setState({modalVisible: false})
-                  }}
+                  onPress={this.props.closeModal}
                   title="Close Modal"
                   color="#841584"
                   accessibilityLabel="Pick a friend to challenge"
@@ -107,7 +105,8 @@ class FindFriendModal extends Component{
 
 FindFriendModal.propTypes = {
     visible: PropTypes.bool,
-    handleTouch: PropTypes.func
+    handleTouch: PropTypes.func,
+    closeModal: PropTypes.func
 };
 
 function mapStateToProps(state, ownProps){

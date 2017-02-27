@@ -50,11 +50,9 @@ class HomeScreen extends Component{
 
     render(){
 
-        const modalIsVisible = Object.keys(this.props.userInfo).length === 0;
-
         return(
             <View style={this.props.style}>
-                <CompleteRegistrationModal visible={modalIsVisible} />
+                <CompleteRegistrationModal visible={this.props.userInfo == null} />
                 <Button
                     raised
                     title="Add Friends"

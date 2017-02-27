@@ -19,7 +19,7 @@ class AddFriendsScreen extends Component {
     constructor(props,context){
         super(props,context);
         this.state = {
-            users: ds.cloneWithRows([]),
+            users: [],
             userNode: {}
         };
         this.renderRow = this.renderRow.bind(this);
@@ -31,7 +31,7 @@ class AddFriendsScreen extends Component {
 
     async search(text){
         if(text == ""){
-            return this.setState({users: ds.cloneWithRows([])});
+            return this.setState({users: []});
         }
         try{
             const body = {
@@ -54,7 +54,7 @@ class AddFriendsScreen extends Component {
                 body: JSON.stringify(body)
             });
             const users = JSON.parse(response._bodyInit).hits.hits;
-            this.setState({users: ds.cloneWithRows(users)});
+            this.setState({users: users});
         }
         catch(error){
             console.log("error",error);
@@ -70,13 +70,23 @@ class AddFriendsScreen extends Component {
                     title="+"
                     color="#2196f3"
                     onPress={function(){
-                        //TODO: set button on loading state
-                        this.addFriend(rowData._id).then(function(response){
-                            //TODO: show checkmark instead of button
-                        }.bind(this),
-                        function(error){
-                            //TODO: show add button again
-                        });
+                        if(this.props.friendRequests[rowData._id]){
+                            const friendRef = FireDB.ref(`users/${rowData._id}`);
+                            friendRef.once('value',function(friendInfo){
+                                FireDB.ref(`friends/${rowData._id}/${this.props.userKey}`).set(this.props.userInfo);
+                                FireDB.ref(`friends/${this.props.userKey}/${rowData._id}`).set(friendInfo.val());
+                                FireDB.ref(`friendRequests/${this.props.userKey}/${rowData._id}`).set(null);
+                            }.bind(this));
+                        }
+                        else{
+                             //TODO: set button on loading state
+                            this.addFriend(rowData._id).then(function(response){
+                                //TODO: show checkmark instead of button
+                            }.bind(this),
+                            function(error){
+                                //TODO: show add button again
+                            });
+                        }
                     }.bind(this)}
                 />
             </View>
@@ -96,6 +106,11 @@ class AddFriendsScreen extends Component {
     }
 
     render() {
+
+        const users = this.state.users.filter(function(user){
+           return this.props.friendsList[user._id] == null;
+        }.bind(this));
+
         return (
             <View style={this.props.style}>
                 <TextInput
@@ -105,7 +120,7 @@ class AddFriendsScreen extends Component {
                     clearButtonMode="always"
                 />
                 <ListView
-                    dataSource={this.state.users}
+                    dataSource={ds.cloneWithRows(users)}
                     renderRow={this.renderRow}
                     renderSeparator={this.renderSeparator}
                     enableEmptySections
@@ -123,7 +138,9 @@ AddFriendsScreen.propTypes = {
 function mapStateToProps(state, ownProps){
     return {
         userInfo: state.userInfo,
-        userKey: state.userKey
+        userKey: state.userKey,
+        friendsList: state.friendsList,
+        friendRequests: state.friendRequests
     };
 }
 

@@ -3,10 +3,11 @@ import { Navigator, View, Text, TouchableHighlight, StyleSheet } from 'react-nat
 import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
 import {HomeScreenNavigation} from './navscreens/ScreenNavs';
-import { addToFriendsList } from './actions/friendsListActions';
 import { addToChallengesList } from './actions/challengesListActions';
+import { addToFriendsList, removeFromFriendsList } from './actions/friendsListActions';
+import { addToFriendRequests, removeFromFriendRequests } from './actions/friendRequestsActions';
 import { userLogout, setUserInfo, setUserKey } from './actions/userActions';
-import FirebaseApp, {FireDB} from './FirebaseApp';
+import {FireDB} from './FirebaseApp';
 
 const styles = StyleSheet.create({
     screen: {
@@ -22,11 +23,17 @@ class NavApp extends Component {
         super(props,context);
 
         this.friendsRef = null;
-        this.friendsListener = null;
+        this.friendsAddedListener = null;
+        this.friendsRemovedListener = null;
 
-        this.getUserKey = this.getUserKey.bind(this);
+        this.friendRequestsRef = null;
+        this.friendRequestAddedListener = null;
+        this.friendRequestRemovedListener = null;
+
         this.listenUserFriends = this.listenUserFriends.bind(this);
         this.unlistenUserFriends = this.unlistenUserFriends.bind(this);
+        this.listenFriendRequests = this.listenFriendRequests.bind(this);
+        this.unlistenFriendRequests = this.unlistenFriendRequests.bind(this);
         this.listenUserChallenges = this.listenUserChallenges.bind(this);
     }
 
@@ -35,6 +42,7 @@ class NavApp extends Component {
             this.listenUserInfo();
             this.listenUserFriends();
             this.listenUserChallenges();
+            this.listenFriendRequests();
         }.bind(this));
     }
 
@@ -43,25 +51,13 @@ class NavApp extends Component {
         this.props.actions.userLogout();
     }
 
-    async getUserKey(){
-        const userId = await FirebaseApp.auth().currentUser.uid;
-        return this.props.actions.setUserKey(userId);
-    }
-
-    async listenUserInfo(){
-        const userRef = await FireDB.ref('users/' + this.props.userKey);
-        return userRef.once('value', function(data){
-            const result = data.val();
-            if(result != null){
-                this.props.actions.setUserInfo(result);
-            }
-        }.bind(this));
-    }
-
     async listenUserFriends(){
         this.friendsRef = await FireDB.ref('friends/' + this.props.userKey);
-        this.friendsListener = this.friendsRef.on('child_added', function(data){
+        this.friendsAddedListener = this.friendsRef.on('child_added', function(data){
             this.props.actions.addToFriendsList({[data.key]:data.val()});
+        }.bind(this));
+        this.friendsRemovedListener = this.friendsRef.on('child_removed', function(snapshot) {
+            this.props.actions.removeFromFriendsList(snapshot.key);
         }.bind(this));
     }
 
@@ -73,8 +69,25 @@ class NavApp extends Component {
     }
 
     unlistenUserFriends(){
-        this.friendsRef.off('child_added',this.friendsListener);
+        this.friendsRef.off('child_added',this.friendsAddedListener);
+        this.friendsRef.off('child_removed',this.friendsRemovedListener);
     }
+
+    async listenFriendRequests(){
+        this.friendRequestsRef = FireDB.ref('friendRequests/' + this.props.userKey);
+        this.friendRequestAddedListener = this.friendRequestsRef.on('child_added', function(snapshot) {
+            this.props.actions.addToFriendRequests(snapshot.val());
+        }.bind(this));
+        this.friendRequestRemovedListener = this.friendRequestsRef.on('child_removed', function(snapshot) {
+            this.props.actions.removeFromFriendRequests(snapshot.key);
+        }.bind(this));
+    }
+
+    unlistenFriendRequests(){
+        this.friendRequestsRef.off('child_added',this.friendRequestAddedListener);
+        this.friendRequestsRef.off('child_removed',this.friendRequestRemovedListener);
+    }
+
 
     render() {
         return (
@@ -124,7 +137,8 @@ function mapStateToProps(state, ownProps){
 
 function mapDispatchToProps(dispatch){
     return {
-        actions: bindActionCreators({ addToFriendsList, userLogout, setUserInfo, setUserKey, addToChallengesList }, dispatch)
+        actions: bindActionCreators({ addToFriendsList, removeFromFriendsList, userLogout, setUserInfo, setUserKey, addToFriendRequests, removeFromFriendRequests, addToChallengesList }, dispatch)
+
     };
 }
 
