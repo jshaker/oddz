@@ -3,7 +3,8 @@ import { Navigator, View, Text, TouchableHighlight, StyleSheet } from 'react-nat
 import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
 import {HomeScreenNavigation} from './navscreens/ScreenNavs';
-import { addToFriendsList } from './actions/friendsListActions';
+import { addToFriendsList, removeFromFriendsList } from './actions/friendsListActions';
+import { addToFriendRequests, removeFromFriendRequests } from './actions/friendRequestsActions';
 import { userLogout, setUserInfo, setUserKey } from './actions/userActions';
 import {FireDB} from './FirebaseApp';
 
@@ -21,14 +22,24 @@ class NavApp extends Component {
         super(props,context);
 
         this.friendsRef = null;
-        this.friendsListener = null;
+        this.friendsAddedListener = null;
+        this.friendsRemovedListener = null;
+
+        this.friendRequestsRef = null;
+        this.friendRequestAddedListener = null;
+        this.friendRequestRemovedListener = null;
 
         this.listenUserFriends = this.listenUserFriends.bind(this);
         this.unlistenUserFriends = this.unlistenUserFriends.bind(this);
+
+        this.listenFriendRequests = this.listenFriendRequests.bind(this);
+        this.unlistenFriendRequests = this.unlistenFriendRequests.bind(this);
+
     }
 
     componentWillMount(){
         this.listenUserFriends();
+        this.listenFriendRequests();
     }
 
     componentWillUnmount(){
@@ -38,13 +49,32 @@ class NavApp extends Component {
 
     async listenUserFriends(){
         this.friendsRef = await FireDB.ref('friends/' + this.props.userKey);
-        this.friendsListener = this.friendsRef.on('child_added', function(data){
+        this.friendsAddedListener = this.friendsRef.on('child_added', function(data){
             this.props.actions.addToFriendsList({[data.key]:data.val()});
+        }.bind(this));
+        this.friendsRemovedListener = this.friendsRef.on('child_removed', function(snapshot) {
+            this.props.actions.removeFromFriendsList(snapshot.key);
         }.bind(this));
     }
 
     unlistenUserFriends(){
-        this.friendsRef.off('child_added',this.friendsListener);
+        this.friendsRef.off('child_added',this.friendsAddedListener);
+        this.friendsRef.off('child_removed',this.friendsRemovedListener);
+    }
+
+    async listenFriendRequests(){
+        this.friendRequestsRef = FireDB.ref('friendRequests/' + this.props.userKey);
+        this.friendRequestAddedListener = this.friendRequestsRef.on('child_added', function(snapshot) {
+            this.props.actions.addToFriendRequests(snapshot.val());
+        }.bind(this));
+        this.friendRequestRemovedListener = this.friendRequestsRef.on('child_removed', function(snapshot) {
+            this.props.actions.removeFromFriendRequests(snapshot.key);
+        }.bind(this));
+    }
+
+    unlistenFriendRequests(){
+        this.friendRequestsRef.off('child_added',this.friendRequestAddedListener);
+        this.friendRequestsRef.off('child_removed',this.friendRequestRemovedListener);
     }
 
 
@@ -96,7 +126,7 @@ function mapStateToProps(state, ownProps){
 
 function mapDispatchToProps(dispatch){
     return {
-        actions: bindActionCreators({ addToFriendsList, userLogout, setUserInfo, setUserKey }, dispatch)
+        actions: bindActionCreators({ addToFriendsList, removeFromFriendsList, userLogout, setUserInfo, setUserKey, addToFriendRequests, removeFromFriendRequests }, dispatch)
     };
 }
 

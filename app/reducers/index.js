@@ -1,11 +1,13 @@
 import {combineReducers} from 'redux';
 import friendsList from './friendsListReducer';
+import friendRequests from './friendRequestsReducer';
 import userInfo from './userInfoReducer';
 import userKey from './userKeyReducer';
 import {USER_LOGOUT} from '../actions/actionTypes';
 
 const appReducer = combineReducers({
     friendsList,
+    friendRequests,
     userInfo,
     userKey
 });
