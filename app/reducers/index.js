@@ -1,5 +1,6 @@
 import {combineReducers} from 'redux';
 import friendsList from './friendsListReducer';
+import challengesList from './challengesListReducer';
 import friendRequests from './friendRequestsReducer';
 import userInfo from './userInfoReducer';
 import userKey from './userKeyReducer';
@@ -9,7 +10,8 @@ const appReducer = combineReducers({
     friendsList,
     friendRequests,
     userInfo,
-    userKey
+    userKey,
+    challengesList
 });
 
 const rootReducer = (state, action) => {

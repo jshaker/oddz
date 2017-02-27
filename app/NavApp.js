@@ -3,6 +3,7 @@ import { Navigator, View, Text, TouchableHighlight, StyleSheet } from 'react-nat
 import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
 import {HomeScreenNavigation} from './navscreens/ScreenNavs';
+import { addToChallengesList } from './actions/challengesListActions';
 import { addToFriendsList, removeFromFriendsList } from './actions/friendsListActions';
 import { addToFriendRequests, removeFromFriendRequests } from './actions/friendRequestsActions';
 import { userLogout, setUserInfo, setUserKey } from './actions/userActions';
@@ -31,15 +32,18 @@ class NavApp extends Component {
 
         this.listenUserFriends = this.listenUserFriends.bind(this);
         this.unlistenUserFriends = this.unlistenUserFriends.bind(this);
-
         this.listenFriendRequests = this.listenFriendRequests.bind(this);
         this.unlistenFriendRequests = this.unlistenFriendRequests.bind(this);
-
+        this.listenUserChallenges = this.listenUserChallenges.bind(this);
     }
 
     componentWillMount(){
-        this.listenUserFriends();
-        this.listenFriendRequests();
+        this.getUserKey().then(function(){
+            this.listenUserInfo();
+            this.listenUserFriends();
+            this.listenUserChallenges();
+            this.listenFriendRequests();
+        }.bind(this));
     }
 
     componentWillUnmount(){
@@ -54,6 +58,13 @@ class NavApp extends Component {
         }.bind(this));
         this.friendsRemovedListener = this.friendsRef.on('child_removed', function(snapshot) {
             this.props.actions.removeFromFriendsList(snapshot.key);
+        }.bind(this));
+    }
+
+    async listenUserChallenges(){
+        this.challengesRef = await FireDB.ref('challenges/' + this.props.userKey);
+        this.friendsListener = this.challengesRef.on('child_added', function(data){
+            this.props.actions.addToChallengesList({[data.key]:data.val()});
         }.bind(this));
     }
 
@@ -126,7 +137,8 @@ function mapStateToProps(state, ownProps){
 
 function mapDispatchToProps(dispatch){
     return {
-        actions: bindActionCreators({ addToFriendsList, removeFromFriendsList, userLogout, setUserInfo, setUserKey, addToFriendRequests, removeFromFriendRequests }, dispatch)
+        actions: bindActionCreators({ addToFriendsList, removeFromFriendsList, userLogout, setUserInfo, setUserKey, addToFriendRequests, removeFromFriendRequests, addToChallengesList }, dispatch)
+
     };
 }
 
