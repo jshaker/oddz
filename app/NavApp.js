@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
 import {HomeScreenNavigation} from './navscreens/ScreenNavs';
 import { addToFriendsList } from './actions/friendsListActions';
+import { addToChallengesList } from './actions/challengesListActions';
 import { userLogout, setUserInfo, setUserKey } from './actions/userActions';
 import FirebaseApp, {FireDB} from './FirebaseApp';
 
@@ -26,12 +27,14 @@ class NavApp extends Component {
         this.getUserKey = this.getUserKey.bind(this);
         this.listenUserFriends = this.listenUserFriends.bind(this);
         this.unlistenUserFriends = this.unlistenUserFriends.bind(this);
+        this.listenUserChallenges = this.listenUserChallenges.bind(this);
     }
 
     componentWillMount(){
         this.getUserKey().then(function(){
             this.listenUserInfo();
             this.listenUserFriends();
+            this.listenUserChallenges();
         }.bind(this));
     }
 
@@ -59,6 +62,13 @@ class NavApp extends Component {
         this.friendsRef = await FireDB.ref('friends/' + this.props.userKey);
         this.friendsListener = this.friendsRef.on('child_added', function(data){
             this.props.actions.addToFriendsList({[data.key]:data.val()});
+        }.bind(this));
+    }
+
+    async listenUserChallenges(){
+        this.challengesRef = await FireDB.ref('challenges/' + this.props.userKey);
+        this.friendsListener = this.challengesRef.on('child_added', function(data){
+            this.props.actions.addToChallengesList({[data.key]:data.val()});
         }.bind(this));
     }
 
@@ -114,7 +124,7 @@ function mapStateToProps(state, ownProps){
 
 function mapDispatchToProps(dispatch){
     return {
-        actions: bindActionCreators({ addToFriendsList, userLogout, setUserInfo, setUserKey }, dispatch)
+        actions: bindActionCreators({ addToFriendsList, userLogout, setUserInfo, setUserKey, addToChallengesList }, dispatch)
     };
 }
 
