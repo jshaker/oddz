@@ -3,13 +3,9 @@ import { Navigator, View, Text, TouchableHighlight, StyleSheet } from 'react-nat
 import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
 import {HomeScreenNavigation} from './navscreens/ScreenNavs';
-<<<<<<< HEAD
 import { addToFriendsList, removeFromFriendsList } from './actions/friendsListActions';
 import { addToFriendRequests, removeFromFriendRequests } from './actions/friendRequestsActions';
-=======
-import { addToFriendsList } from './actions/friendsListActions';
 import { addToChallengesList } from './actions/challengesListActions';
->>>>>>> added view challenges page, TODO accept and decline challenges
 import { userLogout, setUserInfo, setUserKey } from './actions/userActions';
 import {FireDB} from './FirebaseApp';
 
@@ -142,11 +138,7 @@ function mapStateToProps(state, ownProps){
 
 function mapDispatchToProps(dispatch){
     return {
-<<<<<<< HEAD
-        actions: bindActionCreators({ addToFriendsList, removeFromFriendsList, userLogout, setUserInfo, setUserKey, addToFriendRequests, removeFromFriendRequests }, dispatch)
-=======
-        actions: bindActionCreators({ addToFriendsList, userLogout, setUserInfo, setUserKey, addToChallengesList }, dispatch)
->>>>>>> added view challenges page, TODO accept and decline challenges
+        actions: bindActionCreators({ addToFriendsList, removeFromFriendsList, userLogout, setUserInfo, setUserKey, addToFriendRequests, removeFromFriendRequests, addToChallengesList }, dispatch)
     };
 }
 
