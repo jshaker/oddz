@@ -31,13 +31,7 @@ class MyChallengesScreen extends Component {
         this.requestsRef = null;
         this.listener = null;
         this.listenerChildRemoved = null;
-
-        //this.goBack = this.goBack.bind(this);
         this.renderRow = this.renderRow.bind(this);
-        // this.listenChallengeRequests = this.listenChallengeRequests.bind(this);
-        // this.unlistenChallengeRequests = this.unlistenChallengeRequests.bind(this);
-        // this.acceptChallenge = this.acceptChallenge.bind(this);
-        // this.rejectChallenge = this.rejectChallenge.bind(this);
     }
 
     renderRow(rowData){
@@ -91,47 +85,6 @@ class MyChallengesScreen extends Component {
             />
         );
     }
-    //keeping for reference TODO accept and reject challenges
-
-    // goBack(){
-    //     this.props.navigator.pop();
-    // }
-
-    // async listenChallengeRequests(){
-    //     this.requestsRef = FireDB.ref('challenges/' + this.props.userKey);
-    //     this.listener = this.requestsRef.on('child_added', function(snapshot) {
-    //         const requestList = [...this.state.challengeRequests, {id: snapshot.key, screenName: snapshot.val().screenName}]
-    //         this.setState({challengeRequests: requestList})
-    //     }.bind(this));
-    //     this.listenerChildRemoved = this.requestsRef.on('child_removed', function(snapshot) {
-    //         const requestList = [...this.state.friendRequests]
-    //         for(var i=0; i<requestList.length; i++){
-    //             if(requestList[i].id == snapshot.key){
-    //                 requestList.splice(i, 1);
-    //                 break;
-    //             }
-    //         }
-    //         this.setState({friendRequests: requestList})
-    //     }.bind(this));
-    // }
-    //
-    // unlistenFriendRequests(){
-    //     this.requestsRef.off('child_added',this.listener);
-    //     this.requestsRef.off('child_removed',this.listenerChildRemoved);
-    // }
-
-    // async acceptFriend(friendID, friendName){
-    //
-    //     FireDB.ref(`friends/${friendID}/${this.props.userKey}`).set(this.props.userInfo);
-    //     FireDB.ref(`friends/${this.props.userKey}/${friendID}`).set(friendName);
-    //     return FireDB.ref(`friendRequests/${this.props.userKey}/${friendID}`).set(null);
-    // }
-    //
-    // async rejectFriend(friendID, friendName){
-    //     return FireDB.ref(`friendRequests/${this.props.userKey}/${friendID}`).set(null);
-    // }
-
-
 
     render() {
 
