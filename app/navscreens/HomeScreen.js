@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, Button} from 'react-native';
 import {connect} from 'react-redux';
 import FirebaseApp from '../FirebaseApp';
 import CompleteRegistrationModal from '../modals/CompleteRegistrationModal';
-import { AddFriendsScreenNavigation, MyFriendsScreenNavigation, AcceptDeclineFriendScreenNavigation, ChallengeScreenNavigation } from './ScreenNavs';
+import { AddFriendsScreenNavigation, MyFriendsScreenNavigation, AcceptDeclineFriendScreenNavigation, ChallengeScreenNavigation, MyChallengesScreenNavigation } from './ScreenNavs';
 
 class HomeScreen extends Component{
 
@@ -19,6 +19,7 @@ class HomeScreen extends Component{
         this.redirectMyFriends = this.redirectMyFriends.bind(this);
         this.redirectFriendRequests = this.redirectFriendRequests.bind(this);
         this.redirectChallenge = this.redirectChallenge.bind(this);
+        this.redirectMyChallenges = this.redirectMyChallenges.bind(this);
 
     }
 
@@ -41,6 +42,10 @@ class HomeScreen extends Component{
 
     redirectChallenge(){
         this.props.navigator.push(ChallengeScreenNavigation);
+    }
+
+    redirectMyChallenges(){
+        this.props.navigator.push(MyChallengesScreenNavigation);
     }
 
     render(){
@@ -71,6 +76,12 @@ class HomeScreen extends Component{
                     title="Challenge"
                     color="#ffc107"
                     onPress={this.redirectChallenge}
+                />
+                <Button
+                    raised
+                    title="View My Challenges"
+                    color="#ffc107"
+                    onPress={this.redirectMyChallenges}
                 />
                 <Button
                     raised
