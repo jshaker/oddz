@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import {connect} from 'react-redux';
 import { FireDB } from '../FirebaseApp';
+import {DetailedChallengeScreenNavigation} from '././ScreenNavs';
+import DetailedChallengeScreen from './DetailedChallengeScreen';
 import {
     StyleSheet,
     Text,
@@ -32,6 +34,8 @@ class MyChallengesScreen extends Component {
         this.listener = null;
         this.listenerChildRemoved = null;
         this.renderRow = this.renderRow.bind(this);
+        this.rejectChallenge = this.rejectChallenge.bind(this);
+        this.redirectDetailedChallengeScreen = this.redirectDetailedChallengeScreen.bind(this);
     }
 
     renderRow(rowData){
@@ -41,17 +45,17 @@ class MyChallengesScreen extends Component {
                 <Text>Challenged!</Text>
                 <Text>{rowData.challengeInfo.title}</Text>
                 <Button
-                    title="accept"
+                    title="Details"
                     color="#2196f3"
                     onPress={function(){
-                    //TODO
-                  }.bind(this)}
+                      this.redirectDetailedChallengeScreen(rowData)
+                    }.bind(this)}
                 />
                 <Button
                     title="decline"
                     color="red"
                     onPress={function(){
-                    //TODO
+                    this.rejectChallenge(rowData.id, this.props.userKey, rowData.challengeInfo.challengerID)
                   }.bind(this)}
                 />
             </View>
@@ -63,11 +67,11 @@ class MyChallengesScreen extends Component {
                 <Text>Your Challenge:</Text>
                 <Text>{rowData.challengeInfo.title}</Text>
                 <Button
-                    title="Check Challenge Status"
+                    title="Details"
                     color="#2196f3"
                     onPress={function(){
-                    //TODO
-                  }.bind(this)}
+                      //TODO
+                    }.bind(this)}
                 />
             </View>
         );
@@ -84,6 +88,15 @@ class MyChallengesScreen extends Component {
               }}
             />
         );
+    }
+
+    redirectDetailedChallengeScreen(rowData){
+        this.props.navigator.push({screen:DetailedChallengeScreen, title: 'Details', showBackButton:true, challengeID: rowData.id, challengeTitle: rowData.challengeInfo.title, challengerID: rowData.challengeInfo.challengerID, challengeDescription:rowData.challengeInfo.description});
+    }
+
+    async rejectChallenge(challengeID, challengerID, challengeeID){
+        FireDB.ref(`challenges/${challengeeID}/${challengeID}`).set(null);
+        return FireDB.ref(`challenges/${challengerID}/${challengeID}`).set(null);
     }
 
     render() {
