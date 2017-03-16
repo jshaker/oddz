@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { Navigator, View, Text, TouchableHighlight, StyleSheet } from 'react-native';
+import { Navigator, View, Text, TouchableHighlight, StyleSheet, BackAndroid } from 'react-native';
 import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
 import {HomeScreenNavigation} from './navscreens/ScreenNavs';
 import { addToFriendsList, removeFromFriendsList } from './actions/friendsListActions';
 import { addToFriendRequests, removeFromFriendRequests } from './actions/friendRequestsActions';
-import { addToChallengesList } from './actions/challengesListActions';
+import { addToChallengesList, removeFromChallengesList } from './actions/challengesListActions';
 import { userLogout, setUserInfo, setUserKey } from './actions/userActions';
 import {FireDB} from './FirebaseApp';
 
@@ -22,6 +22,9 @@ class NavApp extends Component {
     constructor(props,context){
         super(props,context);
 
+        this.navigator = null;
+        this.backButtonListener = null;
+
         this.friendsRef = null;
         this.friendsAddedListener = null;
         this.friendsRemovedListener = null;
@@ -29,6 +32,13 @@ class NavApp extends Component {
         this.friendRequestsRef = null;
         this.friendRequestAddedListener = null;
         this.friendRequestRemovedListener = null;
+
+        this.challengesRef = null;
+        this.challengeAddedListener = null;
+        this.challengeRemovedListener = null;
+
+        this.listenBackButton = this.listenBackButton.bind(this);
+        this.unlistenBackButton = this.unlistenBackButton.bind(this);
 
         this.listenUserFriends = this.listenUserFriends.bind(this);
         this.unlistenUserFriends = this.unlistenUserFriends.bind(this);
@@ -38,19 +48,41 @@ class NavApp extends Component {
         this.unlistenFriendRequests = this.unlistenFriendRequests.bind(this);
 
         this.listenUserChallenges = this.listenUserChallenges.bind(this);
+        this.unlistenUserChallenges = this.unlistenUserChallenges.bind(this);
 
     }
 
     componentWillMount(){
+        this.listenBackButton();
         this.listenUserFriends();
         this.listenFriendRequests();
         this.listenUserChallenges();
     }
 
     componentWillUnmount(){
+        this.unlistenBackButton();
         this.unlistenUserFriends();
+        this.unlistenFriendRequests();
+        this.unlistenUserChallenges();
         this.props.actions.userLogout();
     }
+
+    listenBackButton(){
+        this.backButtonListener = BackAndroid.addEventListener('hardwareBackPress', () => {
+            if(this.navigator && this.navigator.getCurrentRoutes().length > 1){
+                this.navigator.pop();
+                return true;
+            }
+            else{
+                return false;
+            }
+        });
+    }
+
+    unlistenBackButton(){
+        BackAndroid.removeEventListener('hardwareBackPress', this.backButtonListener);
+    }
+
 
     async listenUserFriends(){
         this.friendsRef = await FireDB.ref('friends/' + this.props.userKey);
@@ -64,9 +96,17 @@ class NavApp extends Component {
 
     async listenUserChallenges(){
         this.challengesRef = await FireDB.ref('challenges/' + this.props.userKey);
-        this.friendsListener = this.challengesRef.on('child_added', function(data){
+        this.challengeAddedListener = this.challengesRef.on('child_added', function(data){
             this.props.actions.addToChallengesList({[data.key]:data.val()});
         }.bind(this));
+        this.challengeRemovedListener = this.challengesRef.on('child_removed', function(snapshot){
+            this.props.actions.removeFromChallengesList(snapshot.key);
+        }.bind(this));
+    }
+
+    unlistenUserChallenges(){
+        this.challengesRef.off('child_added',this.challengeAddedListener);
+        this.challengesRef.off('child_removed',this.challengeRemovedListener);
     }
 
     unlistenUserFriends(){
@@ -94,6 +134,7 @@ class NavApp extends Component {
         return (
             <Navigator initialRoute={HomeScreenNavigation}
                        renderScene={(route,navigator) => {
+                           this.navigator = navigator;
                            const Screen = route.screen;
                            return (
                               <Screen navigator={navigator}
@@ -139,7 +180,7 @@ function mapStateToProps(state, ownProps){
 function mapDispatchToProps(dispatch){
     return {
 
-        actions: bindActionCreators({ addToFriendsList, removeFromFriendsList, userLogout, setUserInfo, setUserKey, addToFriendRequests, removeFromFriendRequests, addToChallengesList }, dispatch)
+        actions: bindActionCreators({ addToFriendsList, removeFromFriendsList, userLogout, setUserInfo, setUserKey, addToFriendRequests, removeFromFriendRequests, addToChallengesList, removeFromChallengesList }, dispatch)
     };
 }
 
