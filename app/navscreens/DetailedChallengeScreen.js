@@ -10,33 +10,15 @@ import {
     TextInput
 } from 'react-native';
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#F5FCFF',
-        marginTop: 100
-    },
-    row: {
-        flexDirection: 'row',
-        padding: 10,
-        justifyContent: 'space-between'
-    }
-});
-
-const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-
 class DetailedChallengeScreen extends Component {
 
     constructor(props,context){
         super(props,context);
 
         this.state = {
-          oddz: ''
+            oddz: ''
         };
 
-        this.requestsRef = null;
-        this.listener = null;
-        this.listenerChildRemoved = null;
         this.rejectChallenge = this.rejectChallenge.bind(this);
         this.acceptChallenge = this.acceptChallenge.bind(this);
     }
@@ -53,36 +35,65 @@ class DetailedChallengeScreen extends Component {
     }
 
     render() {
-        return (
-            <View style={styles.container}>
-              <Text>Title: {this.props.route.challengeTitle}</Text>
-              <Text>Description: {this.props.route.challengeDescription}</Text>
-              <Text>Oddz Number: </Text>
-              <TextInput
-                style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-                onChangeText={(oddz) => this.setState({oddz})}
-                value={this.state.oddz}
-              />
-              <Button
-                onPress={function(){
-                  this.acceptChallenge(this.props.route.challengeID, this.props.route.challengerID)
-                }.bind(this)}
-                title="accept"
-                disabled={this.state.oddz === ''}
-                color="#841584"
-                accessibilityLabel="Learn more about this purple button"
-              />
-              <Button
-                  title="decline"
-                  color="red"
-                  onPress={function(){
-                  this.rejectChallenge(this.props.route.challengeID, this.props.userKey, this.props.route.challengerID)
-                  this.props.navigator.pop();
-                }.bind(this)}
-              />
-            </View>
+        const challenge = this.props.challengesList[this.props.route.challengeID];
+        const isChallenger = typeof challenge.challengerID === "undefined";
 
-        );
+        if(challenge.oddzTotal){
+            if(isChallenger){
+                return (
+                    <View style={this.props.style}>
+                        <Text>Enter your guess between 0 and {challenge.oddzTotal}</Text>
+                    </View>
+                );
+            }
+            else{
+                return (
+                  <View style={this.props.style}>
+                      <Text>Waiting on the Challenger to guess a number.</Text>
+                  </View>
+                );
+            }
+        }
+        else{
+            if(isChallenger){
+                return (
+                    <View style={this.props.style}>
+                        <Text>Waiting on Challengee to choose his oddz.</Text>
+                    </View>
+                );
+            }
+            else{
+                return (
+                    <View style={this.props.style}>
+                        <Text>Title: {challenge.title}</Text>
+                        <Text>Description: {challenge.description}</Text>
+                        <Text>Oddz Number: </Text>
+                        <TextInput
+                            style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+                            onChangeText={(oddz) => this.setState({oddz})}
+                            value={this.state.oddz}
+                        />
+                        <Button
+                            onPress={function(){
+                        this.acceptChallenge(this.props.route.challengeID, challenge.challengerID);
+                    }.bind(this)}
+                            title="accept"
+                            disabled={this.state.oddz === ''}
+                            color="#841584"
+                            accessibilityLabel="Learn more about this purple button"
+                        />
+                        <Button
+                            title="decline"
+                            color="red"
+                            onPress={function(){
+                        this.rejectChallenge(this.props.route.challengeID, this.props.userKey, challenge.challengerID);
+                        this.props.navigator.pop();
+                    }.bind(this)}
+                        />
+                    </View>
+                );
+            }
+        }
     }
 }
 
@@ -95,6 +106,7 @@ DetailedChallengeScreen.propTypes = {
 function mapStateToProps(state, ownProps){
     return {
         userKey: state.userKey,
+        challengesList: state.challengesList
     };
 }
 

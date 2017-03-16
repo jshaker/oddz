@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import {connect} from 'react-redux';
 import { FireDB } from '../FirebaseApp';
 import {DetailedChallengeScreenNavigation} from '././ScreenNavs';
-import DetailedChallengeScreen from './DetailedChallengeScreen';
 import {
     StyleSheet,
     Text,
@@ -30,52 +29,42 @@ class MyChallengesScreen extends Component {
     constructor(props,context){
         super(props,context);
 
-        this.requestsRef = null;
-        this.listener = null;
-        this.listenerChildRemoved = null;
         this.renderRow = this.renderRow.bind(this);
         this.rejectChallenge = this.rejectChallenge.bind(this);
         this.redirectDetailedChallengeScreen = this.redirectDetailedChallengeScreen.bind(this);
     }
 
     renderRow(rowData){
-      if(rowData.challengeInfo.challengerID){
-        return (
-            <View style={styles.row}>
-                <Text>Challenged!</Text>
-                <Text>{rowData.challengeInfo.title}</Text>
-                <Button
-                    title="Details"
-                    color="#2196f3"
-                    onPress={function(){
-                      this.redirectDetailedChallengeScreen(rowData)
+        if(rowData.challengeInfo.challengerID){
+            return (
+                <View style={styles.row}>
+                    <Text>Challenged!</Text>
+                    <Text>{rowData.challengeInfo.title}</Text>
+                    <Button
+                        title="Details"
+                        color="#2196f3"
+                        onPress={function(){
+                      this.redirectDetailedChallengeScreen(rowData);
                     }.bind(this)}
-                />
-                <Button
-                    title="decline"
-                    color="red"
-                    onPress={function(){
-                    this.rejectChallenge(rowData.id, this.props.userKey, rowData.challengeInfo.challengerID)
-                  }.bind(this)}
-                />
-            </View>
-        );
-      }
-      else{
-        return (
-            <View style={styles.row}>
-                <Text>Your Challenge:</Text>
-                <Text>{rowData.challengeInfo.title}</Text>
-                <Button
-                    title="Details"
-                    color="#2196f3"
-                    onPress={function(){
-                      //TODO
+                    />
+                </View>
+            );
+        }
+        else{
+            return (
+                <View style={styles.row}>
+                    <Text>Your Challenge:</Text>
+                    <Text>{rowData.challengeInfo.title}</Text>
+                    <Button
+                        title="Details"
+                        color="#2196f3"
+                        onPress={function(){
+                      this.redirectDetailedChallengeScreen(rowData);
                     }.bind(this)}
-                />
-            </View>
-        );
-      }
+                    />
+                </View>
+            );
+        }
     }
 
     renderSeparator(sectionID, rowID, adjacentRowHighlighted){
@@ -91,7 +80,8 @@ class MyChallengesScreen extends Component {
     }
 
     redirectDetailedChallengeScreen(rowData){
-        this.props.navigator.push({screen:DetailedChallengeScreen, title: 'Details', showBackButton:true, challengeID: rowData.id, challengeTitle: rowData.challengeInfo.title, challengerID: rowData.challengeInfo.challengerID, challengeDescription:rowData.challengeInfo.description});
+        const challengeDetailsScreen = Object.assign({},DetailedChallengeScreenNavigation, {challengeID: rowData.id});
+        this.props.navigator.push(challengeDetailsScreen);
     }
 
     async rejectChallenge(challengeID, challengerID, challengeeID){
@@ -101,9 +91,9 @@ class MyChallengesScreen extends Component {
 
     render() {
 
-      const challengesList = Object.keys(this.props.challengesList).map(function(id){
-          return {id, challengeInfo: this.props.challengesList[id]};
-      }.bind(this));
+        const challengesList = Object.keys(this.props.challengesList).map(function(id){
+            return {id, challengeInfo: this.props.challengesList[id]};
+        }.bind(this));
 
         return (
             <ListView
