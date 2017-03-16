@@ -7,6 +7,7 @@ import MyFriendsScreen from './MyFriendsScreen';
 import AcceptDeclineFriendScreen from './FriendRequestsScreen';
 import ChallengeScreen from './ChallengeScreen';
 import MyChallengesScreen from './MyChallengesScreen';
+import DetailedChallengeScreen from './DetailedChallengeScreen';
 
 export const HomeScreenNavigation = {screen: HomeScreen, title: 'Home', showBackButton: false};
 export const AddFriendsScreenNavigation = {screen: AddFriendsScreen, title: 'Add Friends', showBackButton: true};
@@ -14,3 +15,4 @@ export const MyFriendsScreenNavigation = {screen:MyFriendsScreen, title: 'My Fri
 export const AcceptDeclineFriendScreenNavigation = {screen:AcceptDeclineFriendScreen, title: 'Friend Requests', showBackButton: true};
 export const ChallengeScreenNavigation = {screen:ChallengeScreen, title: 'Challenge!', showBackButton: true};
 export const MyChallengesScreenNavigation = {screen:MyChallengesScreen, title: 'My Challenges', showBackButton: true};
+export const DetailedChallengeScreenNavigation = {screen:DetailedChallengeScreen, title: 'Details', showBackButton:true};
