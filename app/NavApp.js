@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Navigator, View, Text, TouchableHighlight, StyleSheet } from 'react-native';
+import { Navigator, View, Text, TouchableHighlight, StyleSheet, BackAndroid } from 'react-native';
 import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
 import {HomeScreenNavigation} from './navscreens/ScreenNavs';
@@ -22,6 +22,9 @@ class NavApp extends Component {
     constructor(props,context){
         super(props,context);
 
+        this.navigator = null;
+        this.backButtonListener = null;
+
         this.friendsRef = null;
         this.friendsAddedListener = null;
         this.friendsRemovedListener = null;
@@ -31,9 +34,15 @@ class NavApp extends Component {
         this.friendRequestAddedListener = null;
         this.friendRequestRemovedListener = null;
 
+
         this.challengeRequestRef = null;
         this.challengeRequestAddedListener = null;
         this.challengeRequestRemovedListener = null;
+
+
+        this.listenBackButton = this.listenBackButton.bind(this);
+        this.unlistenBackButton = this.unlistenBackButton.bind(this);
+
 
         this.listenUserFriends = this.listenUserFriends.bind(this);
         this.unlistenUserFriends = this.unlistenUserFriends.bind(this);
@@ -49,16 +58,36 @@ class NavApp extends Component {
     }
 
     componentWillMount(){
+        this.listenBackButton();
         this.listenUserFriends();
         this.listenFriendRequests();
         this.listenUserChallenges();
     }
 
     componentWillUnmount(){
+        this.unlistenBackButton();
         this.unlistenUserFriends();
         this.unlistenChallengeRequests();
+        this.unlistenFriendRequests();
         this.props.actions.userLogout();
     }
+
+    listenBackButton(){
+        this.backButtonListener = BackAndroid.addEventListener('hardwareBackPress', () => {
+            if(this.navigator && this.navigator.getCurrentRoutes().length > 1){
+                this.navigator.pop();
+                return true;
+            }
+            else{
+                return false;
+            }
+        });
+    }
+
+    unlistenBackButton(){
+        BackAndroid.removeEventListener('hardwareBackPress', this.backButtonListener);
+    }
+
 
     async listenUserFriends(){
         this.friendsRef = await FireDB.ref('friends/' + this.props.userKey);
@@ -71,18 +100,22 @@ class NavApp extends Component {
     }
 
     async listenUserChallenges(){
+
         this.challengeRequestRef = await FireDB.ref('challenges/' + this.props.userKey);
         this.challengeRequestAddedListener = this.challengeRequestRef.on('child_added', function(data){
             this.props.actions.addToChallengesList({[data.key]:data.val()});
         }.bind(this));
         this.challengeRequestRemovedListener = this.challengeRequestRef.on('child_removed', function(snapshot) {
+
             this.props.actions.removeFromChallengesList(snapshot.key);
         }.bind(this));
     }
 
+
     unlistenChallengeRequests(){
       this.challengeRequestsRef.off('child_added',this.challengeRequestAddedListener);
       this.challengeRequestsRef.off('child_removed',this.challengeRequestRemovedListener);
+
     }
 
     unlistenUserFriends(){
@@ -111,6 +144,7 @@ class NavApp extends Component {
         return (
             <Navigator initialRoute={HomeScreenNavigation}
                        renderScene={(route,navigator) => {
+                           this.navigator = navigator;
                            const Screen = route.screen;
                            if(route.challengeID){
                              const challengeID = route.challengeID;

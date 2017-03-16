@@ -29,7 +29,7 @@ class LoadingScreen extends Component {
     render() {
 
         return (
-            <View>
+            <View style={this.props.style}>
                 <Text>Loading</Text>
             </View>
         );
