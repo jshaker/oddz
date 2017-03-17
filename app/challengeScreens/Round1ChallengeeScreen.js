@@ -6,6 +6,7 @@ import {
     Button,
     TextInput
 } from 'react-native';
+import {isPositiveInt} from '../services/oddzValidation';
 
 export default function(props){
     return (
@@ -17,13 +18,14 @@ export default function(props){
                 style={{height: 40, borderColor: 'gray', borderWidth: 1}}
                 onChangeText={(oddzTotal) => this.setState({oddzTotal})}
                 value={this.state.oddzTotal}
+                keyboardType='number-pad'
             />
             <Button
                 onPress={function(){
                         this.acceptChallenge(props.challenge.challengerID);
                     }.bind(this)}
                 title="accept"
-                disabled={this.state.oddzTotal === ''}
+                disabled={!isPositiveInt(this.state.oddzTotal)}
                 color="#841584"
                 accessibilityLabel="Learn more about this purple button"
             />
