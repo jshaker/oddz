@@ -9,21 +9,11 @@ import {
     Button,
     TextInput
 } from 'react-native';
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#F5FCFF',
-        marginTop: 100
-    },
-    row: {
-        flexDirection: 'row',
-        padding: 10,
-        justifyContent: 'space-between'
-    }
-});
-
-const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+import {getChallengeStatus, ROUND1_CHALLENGER,ROUND1_CHALLENGEE,ROUND2_CHALLENGER,ROUND2_CHALLENGEE} from '../services/ChallengeStatusService';
+import Round1ChallengeeScreen from '../challengeScreens/Round1ChallengeeScreen';
+import Round1ChallengerScreen from '../challengeScreens/Round1ChallengerScreen';
+import Round2ChallengeeScreen from '../challengeScreens/Round2ChallengeeScreen';
+import Round2ChallengerScreen from '../challengeScreens/Round2ChallengerScreen';
 
 class DetailedChallengeScreen extends Component {
 
@@ -31,58 +21,49 @@ class DetailedChallengeScreen extends Component {
         super(props,context);
 
         this.state = {
-          oddz: ''
+            oddzTotal: '',
+            challengerGuess: '',
+            challengeeGuess: ''
         };
 
-        this.requestsRef = null;
-        this.listener = null;
-        this.listenerChildRemoved = null;
         this.rejectChallenge = this.rejectChallenge.bind(this);
         this.acceptChallenge = this.acceptChallenge.bind(this);
+        this.sendChallengerGuess = this.sendChallengerGuess.bind(this);
     }
 
 
-    async rejectChallenge(challengeID, challengerID, challengeeID){
-        FireDB.ref(`challenges/${challengeeID}/${challengeID}`).set(null);
-        return FireDB.ref(`challenges/${challengerID}/${challengeID}`).set(null);
+    rejectChallenge(challengerID){
+        FireDB.ref(`challenges/${this.props.userKey}/${this.props.route.challengeID}`).set(null);
+        FireDB.ref(`challenges/${challengerID}/${this.props.route.challengeID}`).set(null);
     }
 
-    async acceptChallenge(challengeID, challengerID){
-        FireDB.ref(`challenges/${challengerID}/${challengeID}`).update({oddzTotal:this.state.oddz});
-        return FireDB.ref(`challenges/${this.props.userKey}/${challengeID}`).update({oddzTotal:this.state.oddz});
+    acceptChallenge(challengerID){
+        const {oddzTotal} = this.state;
+        FireDB.ref(`challenges/${challengerID}/${this.props.route.challengeID}`).update({oddzTotal});
+        FireDB.ref(`challenges/${this.props.userKey}/${this.props.route.challengeID}`).update({oddzTotal});
+    }
+
+    sendChallengerGuess(challengeeID){
+        const {challengerGuess} = this.state;
+        FireDB.ref(`challenges/${challengeeID}/${this.props.route.challengeID}`).update({challengerGuess});
+        FireDB.ref(`challenges/${this.props.userKey}/${this.props.route.challengeID}`).update({challengerGuess});
     }
 
     render() {
-        return (
-            <View style={styles.container}>
-              <Text>Title: {this.props.route.challengeTitle}</Text>
-              <Text>Description: {this.props.route.challengeDescription}</Text>
-              <Text>Oddz Number: </Text>
-              <TextInput
-                style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-                onChangeText={(oddz) => this.setState({oddz})}
-                value={this.state.oddz}
-              />
-              <Button
-                onPress={function(){
-                  this.acceptChallenge(this.props.route.challengeID, this.props.route.challengerID)
-                }.bind(this)}
-                title="accept"
-                disabled={this.state.oddz === ''}
-                color="#841584"
-                accessibilityLabel="Learn more about this purple button"
-              />
-              <Button
-                  title="decline"
-                  color="red"
-                  onPress={function(){
-                  this.rejectChallenge(this.props.route.challengeID, this.props.userKey, this.props.route.challengerID)
-                  this.props.navigator.pop();
-                }.bind(this)}
-              />
-            </View>
+        const challenge = this.props.challengesList[this.props.route.challengeID];
 
-        );
+        switch(getChallengeStatus(challenge)){
+            case ROUND1_CHALLENGER:
+                return Round1ChallengerScreen.call(this,{challenge});
+            case ROUND1_CHALLENGEE:
+                return Round1ChallengeeScreen.call(this,{challenge});
+            case ROUND2_CHALLENGER:
+                return Round2ChallengerScreen.call(this,{challenge});
+            case ROUND2_CHALLENGEE:
+                return Round2ChallengeeScreen.call(this,{challenge});
+            default:
+                return <View></View>
+        }
     }
 }
 
@@ -95,6 +76,7 @@ DetailedChallengeScreen.propTypes = {
 function mapStateToProps(state, ownProps){
     return {
         userKey: state.userKey,
+        challengesList: state.challengesList
     };
 }
 
