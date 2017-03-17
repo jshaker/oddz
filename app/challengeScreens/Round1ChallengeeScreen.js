@@ -15,15 +15,15 @@ export default function(props){
             <Text>Oddz Number: </Text>
             <TextInput
                 style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-                onChangeText={(oddz) => this.setState({oddz})}
-                value={this.state.oddz}
+                onChangeText={(oddzTotal) => this.setState({oddzTotal})}
+                value={this.state.oddzTotal}
             />
             <Button
                 onPress={function(){
-                        this.acceptChallenge(this.props.route.challengeID, props.challenge.challengerID);
+                        this.acceptChallenge(props.challenge.challengerID);
                     }.bind(this)}
                 title="accept"
-                disabled={this.state.oddz === ''}
+                disabled={this.state.oddzTotal === ''}
                 color="#841584"
                 accessibilityLabel="Learn more about this purple button"
             />
@@ -31,7 +31,7 @@ export default function(props){
                 title="decline"
                 color="red"
                 onPress={function(){
-                        this.rejectChallenge(this.props.route.challengeID, this.props.userKey, props.challenge.challengerID);
+                        this.rejectChallenge(props.challenge.challengerID);
                         this.props.navigator.pop();
                     }.bind(this)}
             />
