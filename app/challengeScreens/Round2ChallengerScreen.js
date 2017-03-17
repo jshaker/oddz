@@ -10,7 +10,7 @@ import {
 export default function(props){
     return (
         <View style={this.props.style}>
-            <Text>Enter your guess between 0 and {challenge.oddzTotal}</Text>
+            <Text>Enter your guess between 0 and {props.challenge.oddzTotal}</Text>
         </View>
     );
 }
