@@ -9,6 +9,11 @@ import {
     Button,
     TextInput
 } from 'react-native';
+import {getChallengeStatus, ROUND1_CHALLENGER,ROUND1_CHALLENGEE,ROUND2_CHALLENGER,ROUND2_CHALLENGEE} from '../services/ChallengeStatusService';
+import Round1ChallengeeScreen from '../challengeScreens/Round1ChallengeeScreen';
+import Round1ChallengerScreen from '../challengeScreens/Round1ChallengerScreen';
+import Round2ChallengeeScreen from '../challengeScreens/Round2ChallengeeScreen';
+import Round2ChallengerScreen from '../challengeScreens/Round2ChallengerScreen';
 
 class DetailedChallengeScreen extends Component {
 
@@ -36,63 +41,16 @@ class DetailedChallengeScreen extends Component {
 
     render() {
         const challenge = this.props.challengesList[this.props.route.challengeID];
-        const isChallenger = typeof challenge.challengerID === "undefined";
 
-        if(challenge.oddzTotal){
-            if(isChallenger){
-                return (
-                    <View style={this.props.style}>
-                        <Text>Enter your guess between 0 and {challenge.oddzTotal}</Text>
-                    </View>
-                );
-            }
-            else{
-                return (
-                  <View style={this.props.style}>
-                      <Text>Waiting on the Challenger to guess a number.</Text>
-                  </View>
-                );
-            }
-        }
-        else{
-            if(isChallenger){
-                return (
-                    <View style={this.props.style}>
-                        <Text>Waiting on Challengee to choose his oddz.</Text>
-                    </View>
-                );
-            }
-            else{
-                return (
-                    <View style={this.props.style}>
-                        <Text>Title: {challenge.title}</Text>
-                        <Text>Description: {challenge.description}</Text>
-                        <Text>Oddz Number: </Text>
-                        <TextInput
-                            style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-                            onChangeText={(oddz) => this.setState({oddz})}
-                            value={this.state.oddz}
-                        />
-                        <Button
-                            onPress={function(){
-                        this.acceptChallenge(this.props.route.challengeID, challenge.challengerID);
-                    }.bind(this)}
-                            title="accept"
-                            disabled={this.state.oddz === ''}
-                            color="#841584"
-                            accessibilityLabel="Learn more about this purple button"
-                        />
-                        <Button
-                            title="decline"
-                            color="red"
-                            onPress={function(){
-                        this.rejectChallenge(this.props.route.challengeID, this.props.userKey, challenge.challengerID);
-                        this.props.navigator.pop();
-                    }.bind(this)}
-                        />
-                    </View>
-                );
-            }
+        switch(getChallengeStatus(challenge)){
+            case ROUND1_CHALLENGER:
+                return Round1ChallengerScreen.call(this,{challenge});
+            case ROUND1_CHALLENGEE:
+                return Round1ChallengeeScreen.call(this,{challenge});
+            case ROUND2_CHALLENGER:
+                return Round2ChallengerScreen.call(this,{challenge});
+            case ROUND2_CHALLENGEE:
+                return Round2ChallengeeScreen.call(this,{challenge});
         }
     }
 }
