@@ -116,10 +116,9 @@ class NavApp extends Component {
     }
 
     unlistenChallengeRequests(){
-        this.challengeRequestsRef.off('child_added',this.challengeRequestAddedListener);
-        this.challengeRequestsRef.off('child_removed',this.challengeRequestRemovedListener);
-        this.challengeRequestsRef.off('child_changed',this.challengeRequestChangedListener);
-
+        this.challengeRequestRef.off('child_added',this.challengeRequestAddedListener);
+        this.challengeRequestRef.off('child_removed',this.challengeRequestRemovedListener);
+        this.challengeRequestRef.off('child_changed',this.challengeRequestChangedListener);
     }
 
     unlistenUserFriends(){

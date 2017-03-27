@@ -10,6 +10,9 @@ export const ROUND4_CHALLENGER_FAILURE = "ROUND4_CHALLENGER_FAILURE";
 export const ROUND4_CHALLENGEE_FAILURE = "ROUND4_CHALLENGEE_FAILURE";
 
 export function getChallengeStatus(challenge){
+    if(typeof challenge === "undefined"){
+        return "";
+    }
     if(typeof challenge.challengeeID === "undefined" && typeof challenge.challengerID !== "undefined"){
         if(typeof challenge.oddzTotal === "undefined"){
             return ROUND1_CHALLENGEE;

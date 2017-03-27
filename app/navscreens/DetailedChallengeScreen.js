@@ -64,9 +64,9 @@ class DetailedChallengeScreen extends Component {
     }
 
     clearChallenge(challenge){
+        this.props.navigator.pop();
         FireDB.ref(`history/${this.props.userKey}/${this.props.route.challengeID}`).set(challenge);
         FireDB.ref(`challenges/${this.props.userKey}/${this.props.route.challengeID}`).set(null);
-        this.props.navigator.pop();
     }
 
     render() {
