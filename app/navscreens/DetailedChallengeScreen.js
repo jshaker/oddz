@@ -9,11 +9,17 @@ import {
     Button,
     TextInput
 } from 'react-native';
-import {getChallengeStatus, ROUND1_CHALLENGER,ROUND1_CHALLENGEE,ROUND2_CHALLENGER,ROUND2_CHALLENGEE} from '../services/ChallengeStatusService';
+import {getChallengeStatus, ROUND1_CHALLENGER,ROUND1_CHALLENGEE,ROUND2_CHALLENGER,ROUND2_CHALLENGEE, ROUND3_CHALLENGER, ROUND3_CHALLENGEE, ROUND4_CHALLENGER_FAILURE, ROUND4_CHALLENGEE_FAILURE, ROUND4_CHALLENGER_SUCCESS, ROUND4_CHALLENGEE_SUCCESS} from '../services/ChallengeStatusService';
 import Round1ChallengeeScreen from '../challengeScreens/Round1ChallengeeScreen';
 import Round1ChallengerScreen from '../challengeScreens/Round1ChallengerScreen';
 import Round2ChallengeeScreen from '../challengeScreens/Round2ChallengeeScreen';
 import Round2ChallengerScreen from '../challengeScreens/Round2ChallengerScreen';
+import Round3ChallengeeScreen from '../challengeScreens/Round3ChallengeeScreen';
+import Round3ChallengerScreen from '../challengeScreens/Round3ChallengerScreen';
+import Round4ChallengerFailureScreen from '../challengeScreens/Round4ChallengerFailureScreen';
+import Round4ChallengeeFailureScreen from '../challengeScreens/Round4ChallengeeFailureScreen';
+import Round4ChallengerSuccessScreen from '../challengeScreens/Round4ChallengerSuccessScreen';
+import Round4ChallengeeSuccessScreen from '../challengeScreens/Round4ChallengeeSuccessScreen';
 
 class DetailedChallengeScreen extends Component {
 
@@ -29,6 +35,8 @@ class DetailedChallengeScreen extends Component {
         this.rejectChallenge = this.rejectChallenge.bind(this);
         this.acceptChallenge = this.acceptChallenge.bind(this);
         this.sendChallengerGuess = this.sendChallengerGuess.bind(this);
+        this.sendChallengeeGuess = this.sendChallengeeGuess.bind(this);
+        this.clearChallenge = this.clearChallenge.bind(this);
     }
 
 
@@ -49,6 +57,18 @@ class DetailedChallengeScreen extends Component {
         FireDB.ref(`challenges/${this.props.userKey}/${this.props.route.challengeID}`).update({challengerGuess});
     }
 
+    sendChallengeeGuess(challengerID){
+        const {challengeeGuess} = this.state;
+        FireDB.ref(`challenges/${challengerID}/${this.props.route.challengeID}`).update({challengeeGuess});
+        FireDB.ref(`challenges/${this.props.userKey}/${this.props.route.challengeID}`).update({challengeeGuess});
+    }
+
+    clearChallenge(challenge){
+        FireDB.ref(`history/${this.props.userKey}/${this.props.route.challengeID}`).set(challenge);
+        FireDB.ref(`challenges/${this.props.userKey}/${this.props.route.challengeID}`).set(null);
+        this.props.navigator.pop();
+    }
+
     render() {
         const challenge = this.props.challengesList[this.props.route.challengeID];
 
@@ -61,8 +81,20 @@ class DetailedChallengeScreen extends Component {
                 return Round2ChallengerScreen.call(this,{challenge});
             case ROUND2_CHALLENGEE:
                 return Round2ChallengeeScreen.call(this,{challenge});
+            case ROUND3_CHALLENGER:
+                return Round3ChallengerScreen.call(this,{challenge});
+            case ROUND3_CHALLENGEE:
+                return Round3ChallengeeScreen.call(this,{challenge});
+            case ROUND4_CHALLENGER_FAILURE:
+                return Round4ChallengerFailureScreen.call(this,{challenge});
+            case ROUND4_CHALLENGEE_FAILURE:
+                return Round4ChallengeeFailureScreen.call(this,{challenge});
+            case ROUND4_CHALLENGER_SUCCESS:
+                return Round4ChallengerSuccessScreen.call(this,{challenge});
+            case ROUND4_CHALLENGEE_SUCCESS:
+                return Round4ChallengeeSuccessScreen.call(this,{challenge});
             default:
-                return <View></View>
+                return (<View><Text>An error has occured.</Text></View>);
         }
     }
 }

@@ -6,14 +6,14 @@ import {
     Button,
     TextInput
 } from 'react-native';
-import {validateGuess} from '../services/oddzValidation';
+import {validateGuess} from '../services/OddzValidationService';
 
 export default function(props){
     return (
         <View style={this.props.style}>
-            <Text>Title: {props.challenge.title}</Text>
-            <Text>Description: {props.challenge.description}</Text>
-            <Text>Oddz Number: {props.challenge.oddzTotal}</Text>
+            <Text>{props.challenge.title}</Text>
+            <Text>{props.challenge.description}</Text>
+            <Text>Total Oddz: {props.challenge.oddzTotal}</Text>
             <TextInput
                 style={{height: 40, borderColor: 'gray', borderWidth: 1}}
                 onChangeText={(challengerGuess) => this.setState({challengerGuess})}

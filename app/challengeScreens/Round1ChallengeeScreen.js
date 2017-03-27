@@ -6,13 +6,13 @@ import {
     Button,
     TextInput
 } from 'react-native';
-import {isPositiveInt} from '../services/oddzValidation';
+import {isPositiveInt} from '../services/OddzValidationService';
 
 export default function(props){
     return (
         <View style={this.props.style}>
-            <Text>Title: {props.challenge.title}</Text>
-            <Text>Description: {props.challenge.description}</Text>
+            <Text>{props.challenge.title}</Text>
+            <Text>{props.challenge.description}</Text>
             <Text>Oddz Number: </Text>
             <TextInput
                 style={{height: 40, borderColor: 'gray', borderWidth: 1}}
