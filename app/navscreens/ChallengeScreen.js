@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import { FireDB } from '../FirebaseApp';
 import {StyleSheet,Text,View,Button,TextInput, Modal, TouchableHighlight} from 'react-native';
 import FindFriendModal from '../modals/FindFriendModal';
+import {DetailedChallengeScreenNavigation} from './ScreenNavs';
 
 const styles = StyleSheet.create({
     container: {
@@ -52,7 +53,10 @@ class ChallengeScreen extends Component {
         const updates = {};
         updates[`challenges/${data.challengerID}/${challengeKey}`] = challengeeData;
         updates[`challenges/${data.challengeeID}/${challengeKey}`] = challengerData;
-        return FireDB.ref().update(updates);
+        FireDB.ref().update(updates).then(function(){
+            const challengeDetailsScreen = Object.assign({},DetailedChallengeScreenNavigation, {challengeID: challengeKey});
+            this.props.navigator.replace(challengeDetailsScreen);
+        }.bind(this));
     }
 
     handleTouch(data){
@@ -88,16 +92,17 @@ class ChallengeScreen extends Component {
                     <Text> Friend Challenged: {this.state.challengeeID} </Text>
                     <Button
                         onPress={() => {
-                this.setState({modalVisible: true})
-              }}
-                        title="Challenge Friend!"
+                          this.setState({modalVisible: true})
+                        }}
+                        title="Select Friend"
                         color="#841584"
                         accessibilityLabel="Pick a friend to challenge"
                     />
                     <Button
                         onPress={() => {
-                this.sendChallenge(this.state)
-              }}
+                          this.sendChallenge(this.state)
+                        }}
+                        disabled={!this.state.challengeeID || !this.state.title || !this.state.description}
                         title="Send Challenge!"
                         color="blue"
                         accessibilityLabel="Send Challenge"

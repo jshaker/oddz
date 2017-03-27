@@ -12,6 +12,8 @@ export default function(props){
         <View style={this.props.style}>
             <Text>{props.challenge.title}</Text>
             <Text>{props.challenge.description}</Text>
+            <Text>Total Oddz: {props.challenge.oddzTotal}</Text>
+            <Text>Your Guess: {props.challenge.challengerGuess}</Text>
             <Text>Waiting on your opponent...</Text>
         </View>
     );

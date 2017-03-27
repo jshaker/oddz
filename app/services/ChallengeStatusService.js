@@ -4,24 +4,34 @@ export const ROUND2_CHALLENGER = "ROUND2_CHALLENGER";
 export const ROUND2_CHALLENGEE = "ROUND2_CHALLENGEE";
 export const ROUND3_CHALLENGER = "ROUND3_CHALLENGER";
 export const ROUND3_CHALLENGEE = "ROUND3_CHALLENGEE";
-export const ROUND4_CHALLENGER = "ROUND4_CHALLENGER";
-export const ROUND4_CHALLENGEE = "ROUND4_CHALLENGEE";
+export const ROUND4_CHALLENGER_SUCCESS = "ROUND4_CHALLENGER_SUCCESS";
+export const ROUND4_CHALLENGEE_SUCCESS = "ROUND4_CHALLENGEE_SUCCESS";
+export const ROUND4_CHALLENGER_FAILURE = "ROUND4_CHALLENGER_FAILURE";
+export const ROUND4_CHALLENGEE_FAILURE = "ROUND4_CHALLENGEE_FAILURE";
 
 export function getChallengeStatus(challenge){
+    if(typeof challenge === "undefined"){
+        return "";
+    }
     if(typeof challenge.challengeeID === "undefined" && typeof challenge.challengerID !== "undefined"){
         if(typeof challenge.oddzTotal === "undefined"){
             return ROUND1_CHALLENGEE;
         }
         else {
-            if(typeof challenge.challengerGuess === "undefined"){
+            if(typeof challenge.challengeeGuess === "undefined"){
                 return ROUND2_CHALLENGEE;
             }
             else{
-                if(typeof challenge.challengeeGuess === "undefined"){
+                if(typeof challenge.challengerGuess === "undefined"){
                     return ROUND3_CHALLENGEE;
                 }
                 else{
-                    return ROUND4_CHALLENGEE;
+                    if(challenge.challengerGuess === challenge.challengeeGuess){
+                        return ROUND4_CHALLENGEE_SUCCESS;
+                    }
+                    else{
+                        return ROUND4_CHALLENGEE_FAILURE;
+                    }
                 }
             }
         }
@@ -39,9 +49,15 @@ export function getChallengeStatus(challenge){
                     return ROUND3_CHALLENGER;
                 }
                 else{
-                    return ROUND4_CHALLENGER;
+                    if(challenge.challengerGuess === challenge.challengeeGuess){
+                        return ROUND4_CHALLENGER_SUCCESS;
+                    }
+                    else{
+                        return ROUND4_CHALLENGER_FAILURE;
+                    }
                 }
             }
         }
     }
+    return "";
 }
