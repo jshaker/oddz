@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
-import {View, Text, StyleSheet,Button} from 'react-native';
+import {View, Text, StyleSheet,Button, AsyncStorage} from 'react-native';
 import LoginScreen from './LoginScreen';
 import RegisterScreen from './RegisterScreen';
 import LoadingScreen from './LoadingScreen';
@@ -35,6 +35,11 @@ class LandingScreen extends Component{
             }
             const { accessToken } = await AccessToken.getCurrentAccessToken();
             const credential = FacebookAuthProvider.credential(accessToken);
+            try {
+                await AsyncStorage.setItem('@Oddz:credential', JSON.stringify(credential));
+            } catch (error) {
+                // Error saving data
+            }
             const {uid} = await FirebaseApp.auth().signInWithCredential(credential);
             this.props.actions.setUserKey(uid);
             this.props.navigator.push({screen: LoadingScreen});

@@ -20,7 +20,10 @@ class RegisterScreen extends Component {
 
     async signup() {
         try {
-            await FirebaseApp.auth().createUserWithEmailAndPassword(this.state.email, this.state.password);
+            const resp = await FirebaseApp.auth().createUserWithEmailAndPassword(this.state.email, this.state.password);
+            const accessToken = await resp.getToken();
+            console.log("accessToken",accessToken);
+            const uid = resp.uid;
             this.props.actions.setUserKey(uid);
             this.props.navigator.push({screen: LoadingScreen});
         } catch (error) {

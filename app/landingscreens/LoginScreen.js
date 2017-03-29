@@ -20,7 +20,10 @@ class LoginScreen extends Component {
 
     async login() {
         try {
-            const {uid} = await FirebaseApp.auth().signInWithEmailAndPassword(this.state.email, this.state.password);
+            const resp = await FirebaseApp.auth().signInWithEmailAndPassword(this.state.email, this.state.password);
+            const accessToken = await resp.getToken();
+            console.log("accessToken",accessToken);
+            const uid = resp.uid;
             this.props.actions.setUserKey(uid);
             this.props.navigator.push({screen: LoadingScreen});
         } catch (error) {
