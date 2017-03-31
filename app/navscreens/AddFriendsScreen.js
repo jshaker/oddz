@@ -59,7 +59,6 @@ class AddFriendsScreen extends Component {
         catch(error){
             console.log("error",error);
         }
-
     }
 
     renderRow(rowData){
