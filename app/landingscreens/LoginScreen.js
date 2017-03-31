@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
 import FirebaseApp from '../FirebaseApp';
-import {StyleSheet,Text,View,Navigator,Button,TextInput} from 'react-native';
+import {StyleSheet,Text,View,Navigator,Button,TextInput,AsyncStorage} from 'react-native';
 import { setUserKey } from '../actions/userActions';
 import LoadingScreen from './LoadingScreen';
 
@@ -21,8 +21,7 @@ class LoginScreen extends Component {
     async login() {
         try {
             const resp = await FirebaseApp.auth().signInWithEmailAndPassword(this.state.email, this.state.password);
-            const accessToken = await resp.getToken();
-            console.log("accessToken",accessToken);
+            AsyncStorage.setItem('@Oddz:emailInfo', JSON.stringify([this.state.email,this.state.password]));
             const uid = resp.uid;
             this.props.actions.setUserKey(uid);
             this.props.navigator.push({screen: LoadingScreen});

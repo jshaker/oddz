@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import LandingScreen from './landingscreens/LandingScreen';
+import WelcomeScreen from './landingscreens/WelcomeScreen';
 import { Navigator, View, Text, TouchableHighlight, StyleSheet, BackAndroid } from 'react-native';
 import {Provider} from 'react-redux';
 import configureStore from './store/configureStore';
@@ -52,7 +52,7 @@ export default class App extends Component {
     render() {
         return (
             <Provider store={store}>
-                <Navigator initialRoute={{screen: LandingScreen}}
+                <Navigator initialRoute={{screen: WelcomeScreen}}
                            renderScene={(route,navigator) => {
                                this.navigator = navigator;
                                const Screen = route.screen;

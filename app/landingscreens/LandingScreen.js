@@ -35,11 +35,7 @@ class LandingScreen extends Component{
             }
             const { accessToken } = await AccessToken.getCurrentAccessToken();
             const credential = FacebookAuthProvider.credential(accessToken);
-            try {
-                await AsyncStorage.setItem('@Oddz:credential', JSON.stringify(credential));
-            } catch (error) {
-                // Error saving data
-            }
+            AsyncStorage.setItem('@Oddz:fbAccessToken', accessToken);
             const {uid} = await FirebaseApp.auth().signInWithCredential(credential);
             this.props.actions.setUserKey(uid);
             this.props.navigator.push({screen: LoadingScreen});

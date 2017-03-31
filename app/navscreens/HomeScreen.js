@@ -1,7 +1,8 @@
 import React, {Component, PropTypes} from 'react';
-import {View, Text, StyleSheet, Button} from 'react-native';
+import {View, Text, StyleSheet, Button, AsyncStorage} from 'react-native';
 import {connect} from 'react-redux';
 import FirebaseApp from '../FirebaseApp';
+import LandingScreen from '../landingscreens/LandingScreen';
 import CompleteRegistrationModal from '../modals/CompleteRegistrationModal';
 import { AddFriendsScreenNavigation, MyFriendsScreenNavigation, AcceptDeclineFriendScreenNavigation, ChallengeScreenNavigation, MyChallengesScreenNavigation } from './ScreenNavs';
 
@@ -25,7 +26,9 @@ class HomeScreen extends Component{
 
     async logout(){
         await FirebaseApp.auth().signOut();
+        this.props.topLevelNavigator.replacePrevious({screen: LandingScreen});
         this.props.topLevelNavigator.popToTop(0);
+        AsyncStorage.clear();
     }
 
     redirectAddFriends(){
