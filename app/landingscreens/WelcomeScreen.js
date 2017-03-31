@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-import { View, Text, AsyncStorage} from 'react-native';
+import { View, Text} from 'react-native';
 import {connect} from 'react-redux';
 import LoadingScreen from './LoadingScreen';
 import LandingScreen from './LandingScreen';
 import { bindActionCreators } from 'redux';
 import { setUserKey } from '../actions/userActions';
-import FirebaseApp, {FacebookAuthProvider} from '../FirebaseApp';
+import FirebaseApp from '../FirebaseApp';
 
 class WelcomeScreen extends Component {
 
@@ -16,47 +16,20 @@ class WelcomeScreen extends Component {
     }
 
     componentDidMount(){
-        this.getAsyncCredential();
+        setTimeout(function(){
+            this.getAsyncCredential();
+        }.bind(this), 1500);
     }
 
     async getAsyncCredential(){
-        const emailInfo = await AsyncStorage.getItem('@Oddz:emailInfo');
-        const fbAccessToken = await AsyncStorage.getItem('@Oddz:fbAccessToken');
-        if(emailInfo){
-            try{
-                const {uid} = await FirebaseApp.auth().signInWithEmailAndPassword(...JSON.parse(emailInfo));
-                this.props.actions.setUserKey(uid);
-                setTimeout(function(){
-                    this.props.navigator.replace({screen: LoadingScreen});
-                }.bind(this),1500);
-            }
-            catch(error){
-                console.log("error",error);
-                setTimeout(function(){
-                    this.props.navigator.replace({screen: LandingScreen});
-                }.bind(this),1500);
-            }
+        try{
+            const {uid} = await FirebaseApp.auth().currentUser;
+            this.props.actions.setUserKey(uid);
+            this.props.navigator.push({screen: LoadingScreen});
         }
-        else if(fbAccessToken){
-            try{
-                const credential = FacebookAuthProvider.credential(fbAccessToken);
-                const {uid} = await FirebaseApp.auth().signInWithCredential(credential);
-                this.props.actions.setUserKey(uid);
-                setTimeout(function(){
-                    this.props.navigator.replace({screen: LoadingScreen});
-                }.bind(this),1500);
-            }
-            catch(error){
-                console.log("error",error);
-                setTimeout(function(){
-                    this.props.navigator.replace({screen: LandingScreen});
-                }.bind(this),1500);
-            }
-        }
-        else{
-            setTimeout(function(){
-                this.props.navigator.replace({screen: LandingScreen});
-            }.bind(this),1500);
+        catch(error){
+            console.log("error",error);
+            this.props.navigator.replace({screen: LandingScreen});
         }
     }
 

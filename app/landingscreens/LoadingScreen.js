@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { View, Text} from 'react-native';
 import {connect} from 'react-redux';
+import LandingScreen from './LandingScreen';
 import NavApp from '../NavApp';
 import { bindActionCreators } from 'redux';
 import { setUserInfo } from '../actions/userActions';
@@ -19,6 +20,7 @@ class LoadingScreen extends Component {
         userRef.once('value', function(data){
             this.props.actions.setUserInfo(data.val());
             this.props.navigator.push({screen: NavApp});
+            this.props.navigator.replaceAtIndex({screen: LandingScreen},0);
         }.bind(this));
     }
 
