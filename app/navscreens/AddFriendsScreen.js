@@ -3,12 +3,19 @@ import {connect} from 'react-redux';
 import { FireDB } from '../FirebaseApp';
 import Base64 from 'base-64';
 import {StyleSheet,Text,View,ListView,Button,TextInput} from 'react-native';
+import { SearchBar } from 'react-native-elements'
 
 const styles = StyleSheet.create({
     row: {
         flexDirection: 'row',
         padding: 10,
         justifyContent: 'space-between'
+    },
+    mainContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+        //backgroundColor:'#FFCCBC'
     }
 });
 
@@ -112,18 +119,19 @@ class AddFriendsScreen extends Component {
 
         return (
             <View style={this.props.style}>
-                <TextInput
-                    style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-                    onChangeText={(text) => this.search(text)}
-                    placeholder="Search for friends..."
-                    clearButtonMode="always"
-                />
+              <View style={styles.mainContainer}>
+                <SearchBar
+                  lightTheme
+                  round
+                  onChangeText={(text) => this.search(text)}
+                  placeholder='Search for friends...' />
                 <ListView
                     dataSource={ds.cloneWithRows(users)}
                     renderRow={this.renderRow}
                     renderSeparator={this.renderSeparator}
                     enableEmptySections
                 />
+              </View>
             </View>
         );
     }
