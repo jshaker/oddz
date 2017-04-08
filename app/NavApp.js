@@ -8,12 +8,15 @@ import { addToFriendRequests, removeFromFriendRequests } from './actions/friendR
 import { addToChallengesList, removeFromChallengesList, updateChallenge } from './actions/challengesListActions';
 import { userLogout, setUserInfo, setUserKey } from './actions/userActions';
 import {FireDB} from './FirebaseApp';
+import { Button, Icon } from 'react-native-elements'
 
 const styles = StyleSheet.create({
     screen: {
-        paddingTop: 70,
+        paddingTop: 64,
         flex: 1,
-        backgroundColor: '#F5FCFF'
+        backgroundColor: '#5C6BC0'
+        //#039BE5
+        //#A1887F
     }
 });
 
@@ -169,9 +172,14 @@ class NavApp extends Component {
                                 {
                                     if (route.showBackButton) {
                                       return (
-                                        <TouchableHighlight onPress={() => navigator.pop()}>
-                                          <Text>Back</Text>
-                                        </TouchableHighlight>
+                                        <View style={{padding:15}}>
+                                          <Icon
+                                            size={30}
+                                            name='arrow-left'
+                                            type='font-awesome'
+                                            color='#f50'
+                                            onPress={() => navigator.pop()} />
+                                        </View>
                                       );
                                     } else {
                                       return null;
@@ -180,9 +188,9 @@ class NavApp extends Component {
                                RightButton: (route, navigator, index, navState) =>
                                  { return null; },
                                Title: (route, navigator, index, navState) =>
-                                 { return (<Text>{route.title}</Text>); },
+                                 { return (<View style={{justifyContent:'center', padding:15}}><Text style={{textAlign:'center', fontSize:18}}>{route.title}</Text></View>); },
                              }}
-                            style={{backgroundColor: '#2196f3'}}
+                            style={{backgroundColor: 'white'}}
                            />
                        }
             />
