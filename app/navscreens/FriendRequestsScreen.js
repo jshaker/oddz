@@ -52,6 +52,7 @@ class FriendRequestsScreen extends Component {
               <View style={styles.textContainer}>
                 <Text>{rowData.userInfo.screenName}</Text>
               </View>
+              <View style={{borderColor:'#BDBDBD', borderWidth:0.5, borderRadius:0, width: 75, alignSelf:'center'}}></View>
               <View style={styles.row}>
                 <View>
                   <Button
