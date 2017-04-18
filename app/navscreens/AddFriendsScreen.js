@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import { FireDB } from '../FirebaseApp';
 import Base64 from 'base-64';
 import {StyleSheet,Text,View,ListView,Button,TextInput} from 'react-native';
-import { SearchBar } from 'react-native-elements'
+import { List, ListItem, SearchBar } from 'react-native-elements';
 
 const styles = StyleSheet.create({
     row: {
@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     mainContainer: {
         flex: 1,
         flexDirection: 'column',
-        justifyContent: 'space-around',
+        //justifyContent: 'space-around',
         backgroundColor:'white'
     }
 });
@@ -68,34 +68,35 @@ class AddFriendsScreen extends Component {
         }
     }
 
-    renderRow(rowData){
+    renderRow(rowData, sectionID){
         return (
-            <View style={styles.row}>
-                <Text>{rowData._source.screenName}</Text>
-                <Button
-                    title="+"
-                    color="#2196f3"
-                    onPress={function(){
-                        if(this.props.friendRequests[rowData._id]){
-                            const friendRef = FireDB.ref(`users/${rowData._id}`);
-                            friendRef.once('value',function(friendInfo){
-                                FireDB.ref(`friends/${rowData._id}/${this.props.userKey}`).set(this.props.userInfo);
-                                FireDB.ref(`friends/${this.props.userKey}/${rowData._id}`).set(friendInfo.val());
-                                FireDB.ref(`friendRequests/${this.props.userKey}/${rowData._id}`).set(null);
-                            }.bind(this));
-                        }
-                        else{
-                             //TODO: set button on loading state
-                            this.addFriend(rowData._id).then(function(response){
-                                //TODO: show checkmark instead of button
-                            }.bind(this),
-                            function(error){
-                                //TODO: show add button again
-                            });
-                        }
-                    }.bind(this)}
-                />
-            </View>
+
+
+          <ListItem
+            key={sectionID}
+            title={rowData._source.screenName}
+            rightIcon={{name: 'account-plus', type:'material-community', color:'#2196F3'}}
+            onPress={function(){
+                if(this.props.friendRequests[rowData._id]){
+                    const friendRef = FireDB.ref(`users/${rowData._id}`);
+                    friendRef.once('value',function(friendInfo){
+                        FireDB.ref(`friends/${rowData._id}/${this.props.userKey}`).set(this.props.userInfo);
+                        FireDB.ref(`friends/${this.props.userKey}/${rowData._id}`).set(friendInfo.val());
+                        FireDB.ref(`friendRequests/${this.props.userKey}/${rowData._id}`).set(null);
+                    }.bind(this));
+                }
+                else{
+                     //TODO: set button on loading state
+                    this.addFriend(rowData._id).then(function(response){
+                        //TODO: show checkmark instead of button
+                    }.bind(this),
+                    function(error){
+                        //TODO: show add button again
+                    });
+                }
+            }.bind(this)}
+          />
+
         );
     }
 
@@ -122,15 +123,17 @@ class AddFriendsScreen extends Component {
               <View style={styles.mainContainer}>
                 <SearchBar
                   lightTheme
-                  round
                   onChangeText={(text) => this.search(text)}
-                  placeholder='Search for friends...' />
-                <ListView
-                    dataSource={ds.cloneWithRows(users)}
+                  placeholder='Search for friends...'
+                  style={{backgroundColor:'yellow'}}/>
+                <List style={{alignSelf:'stretch'}}>
+                  <ListView
                     renderRow={this.renderRow}
+                    dataSource={ds.cloneWithRows(users)}
                     renderSeparator={this.renderSeparator}
                     enableEmptySections
-                />
+                  />
+                </List>
               </View>
             </View>
         );

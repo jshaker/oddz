@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
       justifyContent:'center'
     },
     text:{
-      color:'white'
+      color:'black'
     }
 });
 
@@ -92,11 +92,12 @@ class HomeScreen extends Component{
                   <View style={styles.column}>
                     <View style={styles.iconAndLabelContainer}>
                       <Icon
+                      reverse
                       raised
                       name='person-add'
                       type='ionicons'
-                      color='#f50'
-                      size={45}
+                      color='#FF5252'
+                      size={55}
                       style={styles.iconButton}
                       onPress={this.redirectAddFriends} />
                       <Text style={styles.text}>Add Friends</Text>
@@ -110,11 +111,12 @@ class HomeScreen extends Component{
                     </View>
                     <View style={styles.iconAndLabelContainer}>
                       <Icon
+                      reverse
                       raised
                       name='users'
                       type='font-awesome'
-                      color='#f50'
-                      size={45}
+                      color='#FF5252'
+                      size={55}
                       style={styles.iconButton}
                       onPress={this.redirectMyFriends} />
                       <Text style={styles.text}>My Friends</Text>
@@ -128,11 +130,12 @@ class HomeScreen extends Component{
                     </View>
                     <View style={styles.iconAndLabelContainer}>
                       <Icon
+                      reverse
                       raised
                       name='envelope'
                       type='font-awesome'
-                      color='#f50'
-                      size={45}
+                      color='#FF5252'
+                      size={55}
                       style={styles.iconButton}
                       onPress={this.redirectFriendRequests} />
                       <Text style={styles.text}>Friend Requests</Text>
@@ -148,11 +151,12 @@ class HomeScreen extends Component{
                   <View style={styles.column}>
                     <View style={styles.iconAndLabelContainer}>
                       <Icon
+                      reverse
                       raised
                       name='dice-6'
                       type='material-community'
-                      color='#f50'
-                      size={45}
+                      color='#FF5252'
+                      size={55}
                       style={styles.iconButton}
                       onPress={this.redirectChallenge} />
                       <Text style={styles.text}>Challenge</Text>
@@ -166,11 +170,12 @@ class HomeScreen extends Component{
                     </View>
                     <View style={styles.iconAndLabelContainer}>
                       <Icon
+                      reverse
                       raised
                       name='trophy'
                       type='font-awesome'
-                      color='#f50'
-                      size={45}
+                      color='#FF5252'
+                      size={55}
                       style={styles.iconButton}
                       onPress={this.redirectMyChallenges} />
                       <Text style={styles.text}>My Challenges</Text>
@@ -184,11 +189,12 @@ class HomeScreen extends Component{
                     </View>
                     <View style={styles.iconAndLabelContainer}>
                       <Icon
+                      reverse
                       raised
                       name='cogs'
                       type='font-awesome'
-                      color='#f50'
-                      size={45}
+                      color='#FF5252'
+                      size={55}
                       style={styles.iconButton}
                       onPress={this.logout} />
                       <Text style={styles.text}>Settings</Text>

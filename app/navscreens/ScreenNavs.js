@@ -13,6 +13,6 @@ export const HomeScreenNavigation = {screen: HomeScreen, title: 'Home', showBack
 export const AddFriendsScreenNavigation = {screen: AddFriendsScreen, title: 'Add Friends', showBackButton: true};
 export const MyFriendsScreenNavigation = {screen:MyFriendsScreen, title: 'My Friends', showBackButton: true};
 export const AcceptDeclineFriendScreenNavigation = {screen:AcceptDeclineFriendScreen, title: 'Friend Requests', showBackButton: true};
-export const ChallengeScreenNavigation = {screen:ChallengeScreen, title: 'Challenge!', showBackButton: true};
+export const ChallengeScreenNavigation = {screen:ChallengeScreen, title: 'Challenge', showBackButton: true};
 export const MyChallengesScreenNavigation = {screen:MyChallengesScreen, title: 'My Challenges', showBackButton: true};
 export const DetailedChallengeScreenNavigation = {screen:DetailedChallengeScreen, title: 'Details', showBackButton:true};

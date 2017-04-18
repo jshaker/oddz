@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Navigator, View, Text, TouchableHighlight, StyleSheet, BackAndroid } from 'react-native';
+import { Navigator, View, Text, TouchableHighlight, StyleSheet, BackAndroid, Image } from 'react-native';
 import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
 import {HomeScreenNavigation} from './navscreens/ScreenNavs';
@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     screen: {
         paddingTop: 64,
         flex: 1,
-        backgroundColor: '#5C6BC0'
+        backgroundColor: 'white'
         //#039BE5
         //#A1887F
     }
@@ -162,6 +162,7 @@ class NavApp extends Component {
                                       route={route}
                                       {...route.passProps}
                               />
+
                            );
                        }}
                        navigationBar={
@@ -171,13 +172,14 @@ class NavApp extends Component {
                                 {
                                     if (route.showBackButton) {
                                       return (
-                                        <View style={{padding:15}}>
+                                        <View>
                                           <Icon
-                                            size={30}
-                                            name='arrow-left'
-                                            type='font-awesome'
-                                            color='#f50'
-                                            onPress={() => navigator.pop()} />
+                                            size={40}
+                                            name='chevron-left'
+                                            type='material-icon'
+                                            color='white'
+                                            onPress={() => navigator.pop()}
+                                            underlayColor='transparent' />
                                         </View>
                                       );
                                     } else {
@@ -187,9 +189,9 @@ class NavApp extends Component {
                                RightButton: (route, navigator, index, navState) =>
                                  { return null; },
                                Title: (route, navigator, index, navState) =>
-                                 { return (<View style={{justifyContent:'center', padding:15}}><Text style={{textAlign:'center', fontSize:18}}>{route.title}</Text></View>); },
+                                 { return (<View style={{justifyContent:'center', padding:15}}><Text style={{textAlign:'center', fontSize:18, color:'white'}}>{route.title}</Text></View>); },
                              }}
-                            style={{backgroundColor: 'white'}}
+                            style={{backgroundColor: '#2196F3'}}
                            />
                        }
             />
