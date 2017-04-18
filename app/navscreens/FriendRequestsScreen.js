@@ -8,6 +8,7 @@ import {
     ListView,
     Button
 } from 'react-native';
+//import { List, ListItem, SearchBar } from 'react-native-elements';
 
 const styles = StyleSheet.create({
     container: {
@@ -37,7 +38,7 @@ class FriendRequestsScreen extends Component {
         this.rejectFriend = this.rejectFriend.bind(this);
     }
 
-    renderRow(rowData){
+    renderRow(rowData, sectionID){
         return (
             <View style={styles.row}>
                 <Text>{rowData.screenName}</Text>
@@ -95,6 +96,7 @@ class FriendRequestsScreen extends Component {
         const friendRequests = Object.keys(this.props.friendRequests).map(function(id){
             return {id, userInfo: this.props.friendRequests[id]};
         }.bind(this));
+
 
         return (
             <ListView

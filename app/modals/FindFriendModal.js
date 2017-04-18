@@ -1,7 +1,8 @@
 import React, {Component, PropTypes} from 'react';
-import {Modal, View, TextInput, Text, Button, TouchableHighlight, StyleSheet, ListView} from 'react-native';
+import {Modal, View, TextInput, Text, TouchableHighlight, StyleSheet, ListView} from 'react-native';
 import {connect} from 'react-redux';
 import { FireDB } from '../FirebaseApp';
+import { Button } from 'react-native-elements'
 
 const styles = StyleSheet.create({
     row: {
@@ -80,23 +81,24 @@ class FindFriendModal extends Component{
               visible={this.props.visible}
               onRequestClose={() => {alert("Modal has been closed.")}}
           >
-             <View style={{marginTop: 22}}>
-             <ListView
-                 dataSource={ds.cloneWithRows(this.state.friends)}
-                 renderRow={this.renderRow}
-                 renderSeparator={this.renderSeparator}
-                 enableEmptySections
-             />
-              <View>
+             <View style={{marginTop: 64, flex: 1, flexDirection: 'column', justifyContent: 'space-around'}}>
+                 <ListView
+                     dataSource={ds.cloneWithRows(this.state.friends)}
+                     renderRow={this.renderRow}
+                     renderSeparator={this.renderSeparator}
+                     enableEmptySections
+                 />
+                 <View>
 
-                <Button
-                  onPress={this.props.closeModal}
-                  title="Close Modal"
-                  color="#841584"
-                  accessibilityLabel="Pick a friend to challenge"
-                />
 
-              </View>
+                  <Button
+                    medium
+                    backgroundColor='#ff5252'
+                    title='CLOSE'
+                    onPress={this.props.closeModal}
+                    />
+
+                </View>
              </View>
           </Modal>
         );
