@@ -15,8 +15,6 @@ const styles = StyleSheet.create({
         paddingTop: 64,
         flex: 1,
         backgroundColor: 'white'
-        //#039BE5
-        //#A1887F
     }
 });
 
