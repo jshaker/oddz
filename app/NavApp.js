@@ -128,11 +128,11 @@ class NavApp extends Component {
 
     async listenFriendRequests(){
         this.friendRequestsRef = FireDB.ref('friendRequests/' + this.props.userKey);
-        this.friendRequestAddedListener = this.friendRequestsRef.on('child_added', function(snapshot) {
-            this.props.actions.addToFriendRequests(snapshot.val());
+        this.friendRequestAddedListener = this.friendRequestsRef.on('child_added', function(data) {
+            this.props.actions.addToFriendRequests({[data.key]:data.val()});
         }.bind(this));
-        this.friendRequestRemovedListener = this.friendRequestsRef.on('child_removed', function(snapshot) {
-            this.props.actions.removeFromFriendRequests(snapshot.key);
+        this.friendRequestRemovedListener = this.friendRequestsRef.on('child_removed', function(data) {
+            this.props.actions.removeFromFriendRequests(data.key);
         }.bind(this));
     }
 

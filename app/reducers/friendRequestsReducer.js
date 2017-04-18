@@ -4,7 +4,7 @@ import _ from 'lodash';
 export default function friendRequestsReducer(state={}, action){
     switch(action.type){
         case ADD_TO_FRIEND_REQUESTS:
-            return Object.assign({}, state, action.friend);
+            return Object.assign({}, state, action.friendRequest);
         case REMOVE_FROM_FRIEND_REQUESTS:
             return _.omit(state, action.friendRequestID);
         default:

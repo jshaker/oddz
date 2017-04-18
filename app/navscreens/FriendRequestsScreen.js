@@ -40,19 +40,19 @@ class FriendRequestsScreen extends Component {
     renderRow(rowData){
         return (
             <View style={styles.row}>
-                <Text>{rowData.screenName}</Text>
+                <Text>{rowData.userInfo.screenName}</Text>
                 <Button
                     title="accept"
                     color="#2196f3"
                     onPress={function(){
-                    this.acceptFriend(rowData.id, rowData.userInfo.screenName)
+                    this.acceptFriend(rowData.id)
                   }.bind(this)}
                 />
                 <Button
                     title="decline"
                     color="red"
                     onPress={function(){
-                    this.rejectFriend(rowData.id, rowData.userInfo.screenName)
+                    this.rejectFriend(rowData.id)
                   }.bind(this)}
                 />
             </View>
@@ -84,7 +84,7 @@ class FriendRequestsScreen extends Component {
         }.bind(this));
     }
 
-    async rejectFriend(friendID, friendName){
+    async rejectFriend(friendID){
         return FireDB.ref(`friendRequests/${this.props.userKey}/${friendID}`).set(null);
     }
 
