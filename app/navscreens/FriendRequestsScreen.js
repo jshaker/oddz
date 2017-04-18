@@ -15,10 +15,18 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#F5FCFF'
     },
-    row: {
-        flexDirection: 'row',
+    column: {
+        flexDirection: 'column',
         padding: 10,
-        justifyContent: 'space-between'
+        justifyContent: 'space-around'
+    },
+    row:{
+      flexDirection: 'row',
+      padding:10,
+      justifyContent:'space-around'
+    },
+    textContainer:{
+      alignItems:'center'
     }
 });
 
@@ -40,22 +48,30 @@ class FriendRequestsScreen extends Component {
 
     renderRow(rowData, sectionID){
         return (
-            <View style={styles.row}>
+            <View style={styles.column}>
+              <View style={styles.textContainer}>
                 <Text>{rowData.userInfo.screenName}</Text>
-                <Button
-                    title="accept"
-                    color="#2196f3"
-                    onPress={function(){
-                    this.acceptFriend(rowData.id)
-                  }.bind(this)}
-                />
-                <Button
-                    title="decline"
-                    color="red"
-                    onPress={function(){
-                    this.rejectFriend(rowData.id)
-                  }.bind(this)}
-                />
+              </View>
+              <View style={styles.row}>
+                <View>
+                  <Button
+                      title="accept"
+                      color="#2196f3"
+                      onPress={function(){
+                      this.acceptFriend(rowData.id)
+                    }.bind(this)}
+                  />
+                </View>
+                <View>
+                  <Button
+                      title="decline"
+                      color="red"
+                      onPress={function(){
+                      this.rejectFriend(rowData.id)
+                    }.bind(this)}
+                  />
+                </View>
+              </View>
             </View>
         );
     }
