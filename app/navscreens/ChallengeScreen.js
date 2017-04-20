@@ -1,13 +1,17 @@
 import React, { Component, PropTypes } from 'react';
 import {connect} from 'react-redux';
 import { FireDB } from '../FirebaseApp';
-import {StyleSheet,Text,View,Button,TextInput, Modal, TouchableHighlight} from 'react-native';
+import {StyleSheet,Text,View,TextInput, Modal, TouchableHighlight} from 'react-native';
 import FindFriendModal from '../modals/FindFriendModal';
 import {DetailedChallengeScreenNavigation} from './ScreenNavs';
+import { FormLabel, FormInput, Button } from 'react-native-elements'
 
 const styles = StyleSheet.create({
     container: {
-        padding:10
+        padding:10,
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+        flex:1
     },
     titleInput:{
         height: 40,
@@ -75,38 +79,44 @@ class ChallengeScreen extends Component {
                                  closeModal={this.closeModal}
                 />
                 <View style={styles.container}>
-                    <Text> Title </Text>
-                    <TextInput
-                        style={styles.titleInput}
+                  <View>
+                    <FormLabel> Title </FormLabel>
+                    <FormInput
+                        //style={styles.titleInput}
                         onChangeText={(title) => this.setState({title})}
                         value={this.state.title}
                     />
-                    <Text> Description </Text>
-                    <TextInput
+                    <FormLabel> Description </FormLabel>
+                    <FormInput
                         style={styles.descriptionInput}
                         multiline = {true}
-                        numberOfLines = {4}
+                        numberOfLines = {10}
                         onChangeText={(description) => this.setState({description})}
                         value={this.state.description}
                     />
-                    <Text> Friend Challenged: {this.state.challengeeID} </Text>
+                    <FormLabel> Friend Challenged: {this.state.challengeeID} </FormLabel>
+                  </View>
+                  <View>
                     <Button
-                        onPress={() => {
-                          this.setState({modalVisible: true})
-                        }}
-                        title="Select Friend"
-                        color="#841584"
-                        accessibilityLabel="Pick a friend to challenge"
-                    />
+                      large
+                      iconLeft
+                      icon={{name: 'accessibility'}}
+                      backgroundColor='#2196f3'
+                      title='SELECT FRIEND'
+                      onPress={() => {
+                        this.setState({modalVisible: true})
+                      }} />
                     <Button
-                        onPress={() => {
-                          this.sendChallenge(this.state)
-                        }}
-                        disabled={!this.state.challengeeID || !this.state.title || !this.state.description}
-                        title="Send Challenge!"
-                        color="blue"
-                        accessibilityLabel="Send Challenge"
-                    />
+                      large
+                      iconLeft
+                      icon={{name: 'dice-6', type:'material-community'}}
+                      backgroundColor='#ff5252'
+                      title='SEND CHALLENGE'
+                      disabled={!this.state.challengeeID || !this.state.title || !this.state.description}
+                      onPress={() => {
+                        this.sendChallenge(this.state)
+                      }} />
+                  </View>
                 </View>
             </View>
         );

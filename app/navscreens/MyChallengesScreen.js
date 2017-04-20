@@ -9,6 +9,7 @@ import {
     ListView,
     Button
 } from 'react-native';
+import { List, ListItem } from 'react-native-elements';
 
 const styles = StyleSheet.create({
     container: {
@@ -34,35 +35,29 @@ class MyChallengesScreen extends Component {
         this.redirectDetailedChallengeScreen = this.redirectDetailedChallengeScreen.bind(this);
     }
 
-    renderRow(rowData){
+    renderRow(rowData, sectionID){
         if(rowData.challengeInfo.challengerID){
             return (
-                <View style={styles.row}>
-                    <Text>Challenged!</Text>
-                    <Text>{rowData.challengeInfo.title}</Text>
-                    <Button
-                        title="Details"
-                        color="#2196f3"
-                        onPress={function(){
-                      this.redirectDetailedChallengeScreen(rowData);
-                    }.bind(this)}
-                    />
-                </View>
+              <ListItem
+                key={sectionID}
+                title={rowData.challengeInfo.title}
+                subtitle='Challenged'
+                onPress={function(){
+                this.redirectDetailedChallengeScreen(rowData);
+                }.bind(this)}
+              />
             );
         }
         else{
             return (
-                <View style={styles.row}>
-                    <Text>Your Challenge:</Text>
-                    <Text>{rowData.challengeInfo.title}</Text>
-                    <Button
-                        title="Details"
-                        color="#2196f3"
-                        onPress={function(){
-                      this.redirectDetailedChallengeScreen(rowData);
-                    }.bind(this)}
-                    />
-                </View>
+                <ListItem
+                  key={sectionID}
+                  title={rowData.challengeInfo.title}
+                  subtitle='Your Challenge'
+                  onPress={function(){
+                  this.redirectDetailedChallengeScreen(rowData);
+                  }.bind(this)}
+                />
             );
         }
     }
@@ -96,13 +91,16 @@ class MyChallengesScreen extends Component {
         }.bind(this));
 
         return (
-            <ListView
-                dataSource={ds.cloneWithRows(challengesList)}
-                renderRow={this.renderRow}
-                renderSeparator={this.renderSeparator}
-                style={this.props.style}
-                enableEmptySections
-            />
+          <View style={this.props.style}>
+            <List>
+              <ListView
+                  dataSource={ds.cloneWithRows(challengesList)}
+                  renderRow={this.renderRow}
+                  renderSeparator={this.renderSeparator}
+                  enableEmptySections
+              />
+            </List>
+          </View>
         );
     }
 }

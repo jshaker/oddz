@@ -3,26 +3,64 @@ import {
     Text,
     View,
     ListView,
-    Button,
+    StyleSheet,
     TextInput
 } from 'react-native';
+import { FormLabel, FormInput, Button } from 'react-native-elements'
+
+const styles = StyleSheet.create({
+    container: {
+        padding:10,
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+        flex:1
+    },
+    textContainer:{
+      alignItems:'center'
+    },
+    oddzContainer:{
+      alignItems:'center',
+      justifyContent:'center'
+    }
+});
 
 export default function(props){
     return (
         <View style={this.props.style}>
-            <Text>{props.challenge.title}</Text>
-            <Text>{props.challenge.description}</Text>
-            <Text>Total Oddz: {props.challenge.oddzTotal}</Text>
-            <Text>Your Guess: {props.challenge.challengeeGuess}</Text>
-            <Text>Challenger's guess: {props.challenge.challengerGuess}</Text>
-            <Text>You survive another round!</Text>
-            <Button
-                onPress={function(){
-                    this.clearChallenge(props.challenge);
-                }.bind(this)}
-                title="clear"
-                color="#841584"
-            />
+          <View style={styles.container}>
+            <View style={styles.textContainer}>
+              <FormLabel>{props.challenge.title}</FormLabel>
+            </View>
+            <View>
+              <FormLabel>Description</FormLabel>
+              <Text style={{marginLeft:20}}>{props.challenge.description}</Text>
+            </View>
+            <View style={styles.oddzContainer}>
+              <View>
+                <FormLabel>Total Oddz</FormLabel>
+                <Text style={{alignSelf:'center'}}>{props.challenge.oddzTotal}</Text>
+              </View>
+              <View>
+                <FormLabel>Your Guess</FormLabel>
+                <Text style={{alignSelf:'center'}}>{props.challenge.challengeeGuess}</Text>
+              </View>
+              <View>
+                <FormLabel>Challenger's Guess</FormLabel>
+                <Text style={{alignSelf:'center'}}>{props.challenge.challengerGuess}</Text>
+              </View>
+            </View>
+            <View>
+              <Button
+                  medium
+                  onPress={function(){
+                      this.clearChallenge(props.challenge);
+                  }.bind(this)}
+                  title="COOL"
+                  color="white"
+                  backgroundColor='#2196f3'
+              />
+            </View>
+          </View>
         </View>
     );
 }

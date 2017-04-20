@@ -8,16 +8,25 @@ import {
     ListView,
     Button
 } from 'react-native';
+//import { List, ListItem, SearchBar } from 'react-native-elements';
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#F5FCFF'
     },
-    row: {
-        flexDirection: 'row',
+    column: {
+        flexDirection: 'column',
         padding: 10,
-        justifyContent: 'space-between'
+        justifyContent: 'space-around'
+    },
+    row:{
+      flexDirection: 'row',
+      padding:10,
+      justifyContent:'space-around'
+    },
+    textContainer:{
+      alignItems:'center'
     }
 });
 
@@ -37,24 +46,33 @@ class FriendRequestsScreen extends Component {
         this.rejectFriend = this.rejectFriend.bind(this);
     }
 
-    renderRow(rowData){
+    renderRow(rowData, sectionID){
         return (
-            <View style={styles.row}>
+            <View style={styles.column}>
+              <View style={styles.textContainer}>
                 <Text>{rowData.userInfo.screenName}</Text>
-                <Button
-                    title="accept"
-                    color="#2196f3"
-                    onPress={function(){
-                    this.acceptFriend(rowData.id)
-                  }.bind(this)}
-                />
-                <Button
-                    title="decline"
-                    color="red"
-                    onPress={function(){
-                    this.rejectFriend(rowData.id)
-                  }.bind(this)}
-                />
+              </View>
+              <View style={{borderColor:'#BDBDBD', borderWidth:0.5, borderRadius:0, width: 75, alignSelf:'center'}}></View>
+              <View style={styles.row}>
+                <View>
+                  <Button
+                      title="accept"
+                      color="#2196f3"
+                      onPress={function(){
+                      this.acceptFriend(rowData.id)
+                    }.bind(this)}
+                  />
+                </View>
+                <View>
+                  <Button
+                      title="decline"
+                      color="red"
+                      onPress={function(){
+                      this.rejectFriend(rowData.id)
+                    }.bind(this)}
+                  />
+                </View>
+              </View>
             </View>
         );
     }
@@ -95,6 +113,7 @@ class FriendRequestsScreen extends Component {
         const friendRequests = Object.keys(this.props.friendRequests).map(function(id){
             return {id, userInfo: this.props.friendRequests[id]};
         }.bind(this));
+
 
         return (
             <ListView

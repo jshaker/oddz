@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
-import {View, Text, StyleSheet, ListView, Button} from 'react-native';
+import {View, Text, StyleSheet, ListView} from 'react-native';
+import { List, ListItem, Button } from 'react-native-elements'
 
 const styles = StyleSheet.create({
     row: {
@@ -26,18 +27,14 @@ class MyFriendsScreen extends Component{
 
     }
 
-    renderRow(rowData){
+    renderRow(rowData, sectionID){
         return (
-            <View style={styles.row}>
-                <Text>{rowData.userInfo.screenName}</Text>
-                <Button
-                    title=">"
-                    color="#2196f3"
-                    onPress={function(){
-                        this.viewUserInfo(rowData.key);
-                    }.bind(this)}
-                />
-            </View>
+          <ListItem
+            key={sectionID}
+            title={rowData.userInfo.screenName}
+            //rightIcon={{name: 'account-remove', type:'material-community', style:{color:'#ff5252'}}}
+            onPress={()=> this.viewUserInfo()}
+          />
         );
     }
 
@@ -59,14 +56,16 @@ class MyFriendsScreen extends Component{
         }.bind(this));
 
         return(
-            <View style={this.props.style}>
+          <View style={this.props.style}>
+            <List>
                 <ListView
                     dataSource={ds.cloneWithRows(friendsList)}
                     renderRow={this.renderRow}
                     renderSeparator={this.renderSeparator}
                     enableEmptySections
                 />
-            </View>
+            </List>
+          </View>
         );
     }
 }

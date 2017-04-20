@@ -1,14 +1,27 @@
 import React, {Component, PropTypes} from 'react';
 import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
-import {View, Text, StyleSheet,Button} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import LoginScreen from './LoginScreen';
 import RegisterScreen from './RegisterScreen';
 import LoadingScreen from './LoadingScreen';
 import { LoginManager, AccessToken } from 'react-native-fbsdk';
 import { setUserKey } from '../actions/userActions';
 import FirebaseApp, {FacebookAuthProvider} from '../FirebaseApp';
+import { Button, SocialIcon, Icon } from 'react-native-elements'
 
+const styles = StyleSheet.create({
+    container: {
+        padding:10,
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+        flex:1
+    },
+    iconAndLabelContainer:{
+      alignItems:'center',
+      justifyContent:'center'
+    },
+});
 
 class LandingScreen extends Component{
 
@@ -49,21 +62,41 @@ class LandingScreen extends Component{
 
         return(
             <View style={this.props.style}>
-                <Button
-                    title="Log In"
-                    color="#ffc107"
-                    onPress={this.redirectLogin}
+              <View style={styles.container}>
+                <View style={styles.iconAndLabelContainer}>
+                  <Icon
+                  reverse
+                  raised
+                  name='dice-6'
+                  type='material-community'
+                  color='#FF5252'
+                  size={100}
+                  style={styles.iconButton}
+                  onPress={this.redirectChallenge} />
+                </View>
+                <View>
+                  <Button
+                      large
+                      title="LOG IN"
+                      color="white"
+                      backgroundColor='#2196f3'
+                      onPress={this.redirectLogin}
+                  />
+                  <Button
+                      large
+                      title="SIGN UP"
+                      color="white"
+                      backgroundColor='#ff5252'
+                      onPress={this.redirectRegister}
+                  />
+                </View>
+                <SocialIcon
+                  title='CONNECT WITH FACEBOOK'
+                  button
+                  type='facebook'
+                  onPress={this.loginWithFacebook}
                 />
-                <Button
-                    title="Sign Up"
-                    color="#8bc34a"
-                    onPress={this.redirectRegister}
-                />
-                <Button
-                    title="Continue With Facebook"
-                    color="#3b5998"
-                    onPress={this.loginWithFacebook}
-                />
+              </View>
             </View>
         );
     }
