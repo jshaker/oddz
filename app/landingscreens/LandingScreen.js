@@ -21,6 +21,9 @@ const styles = StyleSheet.create({
       alignItems:'center',
       justifyContent:'center'
     },
+    iconButton:{
+      alignSelf:'center'
+    }
 });
 
 class LandingScreen extends Component{
@@ -72,7 +75,7 @@ class LandingScreen extends Component{
                   color='#FF5252'
                   size={100}
                   style={styles.iconButton}
-                  onPress={this.redirectChallenge} />
+                  />
                 </View>
                 <View>
                   <Button

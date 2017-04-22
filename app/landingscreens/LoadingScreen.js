@@ -1,11 +1,26 @@
 import React, { Component, PropTypes } from 'react';
-import { View, Text} from 'react-native';
+import { View, Text, StyleSheet} from 'react-native';
 import {connect} from 'react-redux';
 import LandingScreen from './LandingScreen';
 import NavApp from '../NavApp';
 import { bindActionCreators } from 'redux';
 import { setUserInfo } from '../actions/userActions';
 import { FireDB } from '../FirebaseApp';
+import { Icon } from 'react-native-elements';
+import Spinner from 'react-native-spinkit';
+
+const styles = StyleSheet.create({
+    container: {
+        padding:10,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        backgroundColor: '#FF5252',
+        flex:1
+    },
+    iconButton:{
+      alignSelf:'center'
+    }
+});
 
 class LoadingScreen extends Component {
 
@@ -16,11 +31,19 @@ class LoadingScreen extends Component {
     }
 
     async loadUserInfo(){
+        const firstDate = new Date();
         const userRef = await FireDB.ref('users/' + this.props.userKey);
         userRef.once('value', function(data){
-            this.props.actions.setUserInfo(data.val());
-            this.props.navigator.push({screen: NavApp});
-            this.props.navigator.replaceAtIndex({screen: LandingScreen},0);
+            const timeElapsed = new Date() - firstDate;
+            let timeout = 0;
+            if(timeElapsed < 2000){
+                timeout = 2000 - timeElapsed;
+            }
+            setTimeout(function(){
+                this.props.actions.setUserInfo(data.val());
+                this.props.navigator.push({screen: NavApp});
+                this.props.navigator.replaceAtIndex({screen: LandingScreen},0);
+            }.bind(this), timeout);
         }.bind(this));
     }
 
@@ -32,7 +55,9 @@ class LoadingScreen extends Component {
 
         return (
             <View style={this.props.style}>
-                <Text>Loading</Text>
+              <View style={styles.container}>
+                <Text style={{color:'white', alignSelf:'center', fontSize:24}}>Loading...</Text>
+              </View>
             </View>
         );
     }

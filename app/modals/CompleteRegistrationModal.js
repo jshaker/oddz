@@ -1,10 +1,23 @@
 import React, {Component, PropTypes} from 'react';
-import {Modal, View, TextInput, Text, Button} from 'react-native';
+import {Modal, View, TextInput, Text, StyleSheet} from 'react-native';
 import {connect} from 'react-redux';
 import { FireDB } from '../FirebaseApp';
 import { setUserInfo } from '../actions/userActions';
 import { bindActionCreators } from 'redux';
 import Base64 from 'base-64';
+import { FormLabel, FormInput, Button } from 'react-native-elements'
+
+const styles = StyleSheet.create({
+    container: {
+        padding:10,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        flex:1
+    },
+    button: {
+      paddingTop: 20
+    }
+});
 
 class CompleteRegistrationModal extends Component{
 
@@ -77,24 +90,28 @@ class CompleteRegistrationModal extends Component{
                    visible={this.props.visible}
                    onRequestClose={() => null}
             >
-                <View>
-                    <Text>Enter your information</Text>
-                    <TextInput
+                <View style={styles.container}>
+                  <View>
+                    <FormLabel>Enter your username</FormLabel>
+                    <FormInput
                         style={{height: 40, borderColor: 'gray', borderWidth: 1}}
                         onChangeText={(text) => {
                             const userInfo = Object.assign({},this.state.userInfo, {screenName: text});
                             this.setState({userInfo});
                             this.validateScreenName(text);
                         }}
-                        placeholder="Screen Name"
+                        placeholder="Username"
                         value={this.state.screenName}
                     />
+                  </View>
+                  <View style={styles.button}>
                     <Button
-                        title="Create User"
-                        color="#e0e0e0"
+                        title="START PLAYING"
+                        backgroundColor="#2196f3"
                         onPress={this.registerUser}
                         disabled={!this.state.valid}
                     />
+                  </View>
                 </View>
             </Modal>
         );
