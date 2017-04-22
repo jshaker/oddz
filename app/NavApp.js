@@ -177,7 +177,9 @@ class NavApp extends Component {
                                             type='material-icon'
                                             color='white'
                                             onPress={() => navigator.pop()}
-                                            underlayColor='transparent' />
+                                            underlayColor='transparent'
+                                            style={{alignSelf:'center'}}
+                                            />
                                         </View>
                                       );
                                     } else {

@@ -1,11 +1,27 @@
 import React, { Component, PropTypes } from 'react';
-import { View, Text} from 'react-native';
+import { View, Text, StyleSheet} from 'react-native';
 import {connect} from 'react-redux';
 import LoadingScreen from './LoadingScreen';
 import LandingScreen from './LandingScreen';
 import { bindActionCreators } from 'redux';
 import { setUserKey } from '../actions/userActions';
 import FirebaseApp from '../FirebaseApp';
+
+const styles = StyleSheet.create({
+    container: {
+        padding:10,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        backgroundColor: '#FF5252',
+        flex:1
+    },
+    iconButton:{
+      alignSelf:'center'
+    },
+    iconButton:{
+      alignSelf:'center'
+    }
+});
 
 class WelcomeScreen extends Component {
 
@@ -37,7 +53,17 @@ class WelcomeScreen extends Component {
 
         return (
             <View style={this.props.style}>
-                <Text>OddZ</Text>
+              <View style={styles.container}
+                <View style={styles.iconAndLabelContainer}>
+                  <Icon
+                  name='dice-6'
+                  type='material-community'
+                  color='white'
+                  size={100}
+                  style={styles.iconButton}
+                  />
+                </View>
+              </View>
             </View>
         );
     }
