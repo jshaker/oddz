@@ -6,6 +6,7 @@ import LandingScreen from './LandingScreen';
 import { bindActionCreators } from 'redux';
 import { setUserKey } from '../actions/userActions';
 import FirebaseApp from '../FirebaseApp';
+import {Icon} from 'react-native-elements';
 
 const styles = StyleSheet.create({
     container: {
@@ -16,10 +17,15 @@ const styles = StyleSheet.create({
         flex:1
     },
     iconButton:{
-      alignSelf:'center'
+        alignSelf:'center'
     },
     iconButton:{
-      alignSelf:'center'
+        alignSelf:'center'
+    },
+    text: {
+        color: 'white',
+        fontSize: 40,
+        alignSelf: 'center'
     }
 });
 
@@ -53,17 +59,18 @@ class WelcomeScreen extends Component {
 
         return (
             <View style={this.props.style}>
-              <View style={styles.container}
-                <View style={styles.iconAndLabelContainer}>
-                  <Icon
-                  name='dice-6'
-                  type='material-community'
-                  color='white'
-                  size={100}
-                  style={styles.iconButton}
-                  />
+                <View style={styles.container}>
+                    <View style={styles.iconAndLabelContainer}>
+                        <Icon
+                            name='dice-6'
+                            type='material-community'
+                            color='white'
+                            size={100}
+                            style={styles.iconButton}
+                        />
+                        <Text style={styles.text}>Oddz</Text>
+                    </View>
                 </View>
-              </View>
             </View>
         );
     }
