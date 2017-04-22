@@ -170,7 +170,7 @@ class NavApp extends Component {
                                 {
                                     if (route.showBackButton) {
                                       return (
-                                        <View>
+                                        <View style={{justifyContent: 'space-around', flex: 1}}>
                                           <Icon
                                             size={40}
                                             name='chevron-left'
@@ -179,7 +179,7 @@ class NavApp extends Component {
                                             onPress={() => navigator.pop()}
                                             underlayColor='transparent'
                                             style={{alignSelf:'center'}}
-                                            />
+                                           />
                                         </View>
                                       );
                                     } else {
